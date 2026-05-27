@@ -83,6 +83,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "protocolFees",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "totalDeposits",
 				"outputs": [
 					{
@@ -136,11 +149,11 @@
 	},
 	"sources": {
 		"phase2/prac42.sol": {
-			"keccak256": "0xa80e0d9aa7bb7d9fbf8b4c9df201f51c62e3be1491c16e1d359141e7fa27aeb3",
+			"keccak256": "0xbb2d3c1102f6c872f17a1a5048d111d6b8f6a16d0a9a638db9426cdb1ee158c1",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://8b88e09f77b2db02b5542bd0881cd24dd10a5a327bd6c902a315dbc50d0369b8",
-				"dweb:/ipfs/QmQn6Een9WDHGHim4xRBqZAAGTdvjadrmH1ZL6Wu1aH9KQ"
+				"bzz-raw://4c2840662dfa8a4e1a267094a18aea30a5f7673f7f719c8f62cc6476ed1437b9",
+				"dweb:/ipfs/QmXko6NHSPgX9wqseJsQvz9BGziSKx4h8snX73kEFqqdS8"
 			]
 		}
 	},

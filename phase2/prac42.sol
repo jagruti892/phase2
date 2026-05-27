@@ -496,6 +496,162 @@ IMPORTANT CONCEPTS LEARNED
 =========================================================
 */
 
+/*
+=========================================================
+AUDIT REPORT
+=========================================================
+
+Title: Missing Internal Withdraw Logic and Admin Control
+
+Severity: Medium
+
+Reason:
+The vulnerable contract lacks internal withdrawal
+handling, fee accounting, and admin-only internal
+control mechanisms.
+
+---------------------------------------------------------
+Location
+---------------------------------------------------------
+
+Contract: InternalFunctionFlowVul
+
+Affected Areas:
+
+- No internal withdraw helper
+- No internal fee calculation
+- No admin-only internal logic
+- No inherited internal usage model
+
+---------------------------------------------------------
+Vulnerability Description
+---------------------------------------------------------
+
+The vulnerable contract only supports deposits
+and bonus deposits.
+
+The contract does NOT implement:
+
+1. Internal withdraw accounting
+2. Fee deduction logic
+3. Admin-only internal protection
+4. Internal inheritance-based control flow
+
+As a result:
+
+- users cannot safely withdraw balances
+- no protocol fee accounting exists
+- sensitive administrative logic cannot
+  be protected internally
+- contract architecture lacks modular
+  reusable internal security controls
+
+---------------------------------------------------------
+Impact
+---------------------------------------------------------
+
+The protocol architecture becomes incomplete
+and insecure for production-like usage.
+
+Potential risks include:
+
+- inability to safely reduce balances
+- inconsistent accounting logic
+- lack of reusable internal access control
+- future inheritance misuse
+- duplicated unsafe logic in upgrades
+
+If extended into real systems such as:
+
+- staking systems
+- DeFi vaults
+- lending protocols
+- reward systems
+
+missing internal accounting helpers may
+cause unsafe state mutations.
+
+---------------------------------------------------------
+Proof of Concept
+---------------------------------------------------------
+
+STEP 1:
+Deploy contract
+
+---------------------------------------------------------
+
+STEP 2:
+User deposits:
+
+deposit(100)
+
+STATE:
+
+balances[user] = 100
+totalDeposits = 100
+
+---------------------------------------------------------
+
+STEP 3:
+Attempt withdrawal
+
+Observation:
+
+No withdraw functionality exists.
+
+User funds cannot be reduced safely.
+
+---------------------------------------------------------
+
+STEP 4:
+Attempt protocol fee accounting
+
+Observation:
+
+No fee calculation exists.
+
+No protocol fee tracking exists.
+
+---------------------------------------------------------
+
+STEP 5:
+Attempt admin-restricted logic
+
+Observation:
+
+No owner variable exists.
+
+No internal admin validation exists.
+
+Sensitive logic cannot be protected.
+
+---------------------------------------------------------
+Root Cause
+---------------------------------------------------------
+
+The vulnerable contract lacks:
+
+- internal withdraw helper
+- internal fee helper
+- internal owner validation helper
+- reusable inherited internal architecture
+
+Internal modular security design
+was not implemented.
+
+---------------------------------------------------------
+Recommendation
+---------------------------------------------------------
+
+Implement:
+
+1. Internal withdraw helper
+2. Internal fee calculation helper
+3. Internal owner validation helper
+4. Child contract inheritance using
+   internal functions
+*/
+
 //patched code 
 contract InternalFunctionFlow {
     /*
@@ -504,6 +660,7 @@ contract InternalFunctionFlow {
     mapping(address => uint256) public balances;
     address public owner;
     uint256 public totalDeposits;
+    uint256 public protocolFees;
 
     constructor(){
         owner=msg.sender;
@@ -606,7 +763,7 @@ contract InternalFunctionFlow {
         require(balances[_user]>=_amt,"Insufficient balance");
         uint256 fee=_calcFee(_amt);
         uint256 finalAmt=_amt-fee;
-
+         protocolFees += fee;
         balances[_user] -= _amt;
         totalDeposits -= _amt;
         return finalAmt;
