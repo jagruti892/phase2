@@ -573,61 +573,68 @@ IMPORTANT CONCEPTS LEARNED
 =========================================================
 */
 
-//patched code 
+
+//patched code
+/*
+=========================================================
+PATCHED VERSION: Function Execution Chaining
+AUDITOR VERSION WITH FULL FLOW CONTROL
+=========================================================
+*/
+
+// patched code 
+
 contract FunctionExecutionChaining {
-    
-    mapping(address => uint256) public balances;
+    mapping (address=>uint256)public balances;
     mapping (address=>bool)public blacklisted;
 
-    uint256 public totalDeposits;
-    uint256 public totalFees;
-    uint256 public constant fee=5;
     address public owner;
+    uint256 public totalDeposit;
 
     constructor(){
         owner=msg.sender;
     }
 
-    function deposit(uint256 _amount)external{
-        validateAmount(_amount);
-        addBalance(msg.sender,_amount );
-        updateTotal(_amount);
-    }
-   
-    function validateAmount(uint256 _amount) internal pure{
-        require(_amount > 0,"Amount must be > 0");
-        require(_amount <= 100,"Amount too large");
-    }
-
-    function addBalance(address _user,uint256 _amount)internal{
-        balances[_user] += _amount;
-    }
-   
-    function updateTotal(uint256 _amount)internal{
-        totalDeposits += _amount;
-    }
-    
-    function depositWithBonus(uint256 _amount)external{
-        depositInternal(_amount);
-        addBalance(msg.sender,10);
-    }
-   
-    function depositInternal(uint256 _amount)internal{
-        validateAmount(_amount);
-        addBalance(msg.sender,_amount);
-        updateTotal(_amount);
-    }
-
-    function deductFee(uint256 _amount)internal returns(uint256){}
-    function validateBlacklisted(address _user)internal view {
-        require(!blacklisted[_user],"you are blacklisted");
-    }
-
-    function blacklist(address _user)internal{
+    function blacklistUser(address _user)external {
         require(msg.sender==owner,"Not owner");
-        blacklisted[_user]=true;
+        blacklisted[_user]=true;    
     }
-    function withdraw(uint256 _amount)internal{
-        balances[msg.sender] -= _amount;
+
+    function validateUser(address _user)internal view {
+        require(blacklisted[_user]==false,"user is blacklisted");
+    }
+
+    function validateAmt(uint256 _amt)internal pure{
+        require(_amt>0,"amount can't be zero");
+        require(_amt<=100,"amount is too large");
+    }
+
+    function calcFee(uint256 _amount)internal pure returns(uint256){
+        return (_amount*5)/100;
+    }
+
+    function addBalance(address _user,uint256 _amt)internal {
+        balances[_user]+=_amt;
+    }
+
+    function updateTotal(uint256 _amt)internal {
+        totalDeposit+=_amt;
+    }
+
+    //  DEPOSIT FLOW (CHAINED)
+    function deposit(uint256 _amt)external {
+        validateAmt(_amt);
+        validateUser(msg.sender);
+        addBalance(msg.sender, _amt);
+        updateTotal(_amt);
+    }
+
+    // withdraw
+    function _withdrawInternal(address _user,uint256 _amount)internal {
+        // calculate fee
+        uint256 fee=calcFee(_amount);
+        // final amount user receives
+        uint256 finalAmt=_amount-fee;
+        balances[_user]-=_amount;
     }
 }
