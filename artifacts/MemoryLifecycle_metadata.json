@@ -1,0 +1,65 @@
+{
+	"compiler": {
+		"version": "0.8.34+commit.80d5c536"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "string[]",
+						"name": "_names",
+						"type": "string[]"
+					}
+				],
+				"name": "storeNames",
+				"outputs": [
+					{
+						"internalType": "string[]",
+						"name": "",
+						"type": "string[]"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"phase2/prac17.sol": "MemoryLifecycle"
+		},
+		"evmVersion": "osaka",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"phase2/prac17.sol": {
+			"keccak256": "0xf839e5c9135061bbfb1e250ef549d4b1dd9e7bce5483846ea770d70bb546940e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://3d9d359e1efceb3e26abfe56eef2c42dfea352de6a514152b0ad5f219cdb4439",
+				"dweb:/ipfs/QmSDFrpczcVvepyGjGQGR17Gnhz75YR47DXwSjahgBJygo"
+			]
+		}
+	},
+	"version": 1
+}

@@ -1,0 +1,75 @@
+{
+	"compiler": {
+		"version": "0.8.34+commit.80d5c536"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "_numbers",
+						"type": "uint256[]"
+					},
+					{
+						"internalType": "uint256",
+						"name": "start",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "limit",
+						"type": "uint256"
+					}
+				],
+				"name": "processPartialArray",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "total",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"phase2/prac31.sol": "LargeCalldataArray"
+		},
+		"evmVersion": "osaka",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"phase2/prac31.sol": {
+			"keccak256": "0x2a3b5463a19b51ab92b7d5d2f99e3f55c61d58aa3dc2508e0c8c7eaf54f8163a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://e13fdd8162c93269a18721fc149eeb3885066482209d80c27361fa6e74edd008",
+				"dweb:/ipfs/QmWNpDxwRC9GxWhzWxSUzq1DwuJs3t9XdF4EVdRuFqfDb4"
+			]
+		}
+	},
+	"version": 1
+}

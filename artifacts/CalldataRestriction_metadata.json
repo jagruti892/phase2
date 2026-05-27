@@ -1,0 +1,65 @@
+{
+	"compiler": {
+		"version": "0.8.34+commit.80d5c536"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_name",
+						"type": "string"
+					}
+				],
+				"name": "modifyString",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"phase2/prac29.sol": "CalldataRestriction"
+		},
+		"evmVersion": "osaka",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"phase2/prac29.sol": {
+			"keccak256": "0xa4f082c089af56c3181a277200ae091c40b95b8e09a05f75a85257d41e59247b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b38ed18c39029578dfbdf3026764076b2217446e523788b2b8d38b0760d4e49e",
+				"dweb:/ipfs/Qmaqgs8ijweyVHBRtznJRSufcGoZjDf2cEA6TS7WTLNuwj"
+			]
+		}
+	},
+	"version": 1
+}

@@ -1,0 +1,129 @@
+{
+	"compiler": {
+		"version": "0.8.34+commit.80d5c536"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "uint256[][]",
+						"name": "_matrix",
+						"type": "uint256[][]"
+					}
+				],
+				"name": "calculateNestedSum",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256[][]",
+						"name": "_matrix",
+						"type": "uint256[][]"
+					}
+				],
+				"name": "getOuterLength",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256[][]",
+						"name": "_matrix",
+						"type": "uint256[][]"
+					}
+				],
+				"name": "processAndStore",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256[][]",
+						"name": "_matrix",
+						"type": "uint256[][]"
+					}
+				],
+				"name": "readNestedArray",
+				"outputs": [
+					{
+						"internalType": "uint256[][]",
+						"name": "",
+						"type": "uint256[][]"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "totalSum",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"phase2/prac34.sol": "NestedCalldataArrayVul"
+		},
+		"evmVersion": "osaka",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"phase2/prac34.sol": {
+			"keccak256": "0xd91df87cbc22ff943508474cb7b257ae8a66d576d5045a08c1f2c08c32aaa254",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0b5630a2f72dcb802d3c7c960485e913a1b94bda26d9616a1690dbd8f44fed1d",
+				"dweb:/ipfs/QmbBB5qUuhPEkQ3C6HHADrUXZB3uFd3hby2Xo8Yt5udV1A"
+			]
+		}
+	},
+	"version": 1
+}

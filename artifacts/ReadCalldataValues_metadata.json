@@ -1,0 +1,65 @@
+{
+	"compiler": {
+		"version": "0.8.34+commit.80d5c536"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "_nums",
+						"type": "uint256[]"
+					}
+				],
+				"name": "callData",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"phase2/prac28.sol": "ReadCalldataValues"
+		},
+		"evmVersion": "osaka",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"phase2/prac28.sol": {
+			"keccak256": "0xe44d0a2ad2f5f32cabf23eb3b5753037c8c02a2945c063877f72e0ffab1f80cf",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://677fac7e9aa89d9284b735e55ba551290fb1159bf9fece242503ce53c91cd0a5",
+				"dweb:/ipfs/Qmf5g9exAcqEcZYpLCFKTDuroqaLVpnvNnE5bENNuLLvAZ"
+			]
+		}
+	},
+	"version": 1
+}
