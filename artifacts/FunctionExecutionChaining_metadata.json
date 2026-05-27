@@ -11,19 +11,6 @@
 				"type": "constructor"
 			},
 			{
-				"inputs": [],
-				"name": "FEE_PERCENT",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -78,7 +65,7 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_amount",
+						"name": "_amt",
 						"type": "uint256"
 					}
 				],
@@ -91,11 +78,11 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_amount",
+						"name": "_amt",
 						"type": "uint256"
 					}
 				],
-				"name": "depositWithBonus",
+				"name": "depositwithBonous",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -108,6 +95,19 @@
 						"internalType": "address",
 						"name": "",
 						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "protocolFees",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -128,7 +128,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "totalDeposits",
+				"name": "totalDeposit",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -143,7 +143,7 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_amount",
+						"name": "_amt",
 						"type": "uint256"
 					}
 				],
@@ -181,11 +181,11 @@
 	},
 	"sources": {
 		"phase2/prac43.sol": {
-			"keccak256": "0x7f244050eef8776504b7f8e09d85546e791021d676f3ab6274491702ab1bfa19",
+			"keccak256": "0x15cf45204d51ef472058a1c8667ee4313193ecee025c9500755d8d0b5cf4d8a2",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://cf6be9732475dcd7f5085185d7e7860763df81050db85ba6091766eb7012bd12",
-				"dweb:/ipfs/QmRk8LFZkuRfVVXc48EY3iKbjA2NyDhtUutMH2pYQNb7sC"
+				"bzz-raw://99816bf6b1e588ba5891ab7a45710bbae26bf7313210aa66f53f6cb77c643145",
+				"dweb:/ipfs/QmReozLLeqEHKBv1NJhgjDPc5MhSBypcwoMQNP1UWGR4kt"
 			]
 		}
 	},

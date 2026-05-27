@@ -185,7 +185,7 @@ contract FunctionExecutionChainingVul {
     )
         external
     {
-
+        
         /*
             Function calling another function.
         */
@@ -221,7 +221,6 @@ contract FunctionExecutionChainingVul {
             msg.sender,
             _amount
         );
-
         updateTotal(_amount);
     }
 }
@@ -573,15 +572,146 @@ IMPORTANT CONCEPTS LEARNED
 =========================================================
 */
 
-
-//patched code
 /*
-=========================================================
-PATCHED VERSION: Function Execution Chaining
-AUDITOR VERSION WITH FULL FLOW CONTROL
-=========================================================
-*/
+Audit Report
 
+Title: Inconsistent State Update in depositWithBonus()
+
+Severity: Medium
+
+Reason:
+Bonus balance is added without updating totalDeposits consistently.
+
+Location:
+    Contract: FunctionExecutionChainingVul
+    Function: depositWithBonus()
+
+Vulnerability Description:
+
+The depositWithBonus() function adds an additional bonus balance
+to the user:
+
+addBalance(msg.sender, 10);
+
+However, the function does not update the global accounting
+variable:
+
+totalDeposits
+
+for the additional bonus amount.
+
+As a result, user balances increase but protocol accounting
+remains unchanged.
+
+This breaks accounting consistency between:
+
+- balances
+- totalDeposits
+
+---------------------------------------------------------
+
+Impact:
+
+The protocol state becomes inconsistent.
+The following invariant breaks:
+sum(all balances) == totalDeposits
+This may cause issues in systems using:
+
+- staking logic
+- vault accounting
+- lending pools
+- reward systems
+- treasury calculations
+
+Incorrect accounting may eventually lead to:
+
+- incorrect reward distribution
+- insolvency conditions
+- broken withdrawal calculations
+- desynchronized protocol state
+
+---------------------------------------------------------
+
+Proof of Concept:
+
+STEP 1:
+Deploy the contract.
+
+---------------------------------------------------------
+
+STEP 2:
+User calls:
+
+deposit(50);
+
+State becomes:
+
+balances[user] = 50
+totalDeposits = 50
+
+---------------------------------------------------------
+
+STEP 3:
+User calls:
+
+depositWithBonus(100);
+
+Execution flow:
+
+depositInternal(100);
+
+updates:
+
+balances[user] += 100
+totalDeposits += 100
+
+State becomes:
+
+balances[user] = 150
+totalDeposits = 150
+
+---------------------------------------------------------
+
+STEP 4:
+Bonus logic executes:
+
+addBalance(msg.sender, 10);
+
+Final state:
+
+balances[user] = 160
+totalDeposits = 150
+
+---------------------------------------------------------
+
+OBSERVE:
+
+balances[user] != totalDeposits
+
+Accounting inconsistency occurs.
+
+---------------------------------------------------------
+
+Root Cause:
+
+The bonus execution path updates user balance but does not
+update the protocol-wide accounting variable:
+
+totalDeposits
+
+Missing state update:
+
+totalDeposits += 10;
+
+---------------------------------------------------------
+
+Recommendation:
+
+Whenever user balance increases, totalDeposits should also
+be updated to maintain accounting consistency.
+
+---------------------------------------------------------
+*/
 // patched code 
 
 contract FunctionExecutionChaining {
@@ -590,6 +720,7 @@ contract FunctionExecutionChaining {
 
     address public owner;
     uint256 public totalDeposit;
+    uint256 public protocolFees;
 
     constructor(){
         owner=msg.sender;
@@ -598,6 +729,11 @@ contract FunctionExecutionChaining {
     function blacklistUser(address _user)external {
         require(msg.sender==owner,"Not owner");
         blacklisted[_user]=true;    
+    }
+
+    function removeBlacklist(address _user)external{
+    require(msg.sender == owner,"Not owner");
+    blacklisted[_user] = false;
     }
 
     function validateUser(address _user)internal view {
@@ -621,20 +757,42 @@ contract FunctionExecutionChaining {
         totalDeposit+=_amt;
     }
 
+
     //  DEPOSIT FLOW (CHAINED)
-    function deposit(uint256 _amt)external {
-        validateAmt(_amt);
+
+    function depositInternal(uint256 _amt)internal {
         validateUser(msg.sender);
-        addBalance(msg.sender, _amt);
-        updateTotal(_amt);
+         validateAmt(_amt);
+         addBalance(msg.sender, _amt);
+         updateTotal(_amt);
+    }
+
+    function deposit(uint256 _amt)external {
+        depositInternal(_amt);
     }
 
     // withdraw
-    function _withdrawInternal(address _user,uint256 _amount)internal {
+    function _withdrawInternal(address _user,uint256 _amount)internal returns (uint256) {
+         validateUser(msg.sender);
+        validateAmt(_amount);
+         require(balances[_user] >= _amount,"Insufficient Balance");
         // calculate fee
         uint256 fee=calcFee(_amount);
         // final amount user receives
         uint256 finalAmt=_amount-fee;
+        protocolFees += fee;
         balances[_user]-=_amount;
+        totalDeposit-=_amount;
+        return finalAmt;
+    }
+
+    function withdraw(uint256 _amt)external {
+       _withdrawInternal(msg.sender, _amt);
+    }
+
+    function depositwithBonous(uint256 _amt)external {
+       depositInternal(_amt);
+       addBalance(msg.sender, 10);
+       updateTotal(10);
     }
 }
