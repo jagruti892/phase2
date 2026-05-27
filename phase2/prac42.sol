@@ -85,13 +85,7 @@ contract InternalFunctionFlowVul {
     EXTERNAL ENTRY FUNCTION
     =====================================================
     */
-
-    function deposit(
-        uint256 _amount
-    )
-        external
-    {
-
+    function deposit(uint256 _amount)external{
         /*
             STEP 1:
             Validate input using internal function.
@@ -122,7 +116,6 @@ contract InternalFunctionFlowVul {
             Internal require check.
         */
         require(_amount > 0,"Amount must be > 0");
-
         require(_amount <= 100,"Amount too large");
     }
 
@@ -629,12 +622,17 @@ contract InternalFunctionFlow {
 
     function emergencyReset(address _user)external  {
         _onlyOwner();
+        uint256 userBalance = balances[_user];
+        totalDeposits -= userBalance;
         balances[_user]=0;
     }
 }
 
 contract childContract is InternalFunctionFlow {
+
     function claimReward(address _user)external {
+        _onlyOwner();
         _updateBalance(_user, 25);
+        totalDeposits +=25;
     }
 }
