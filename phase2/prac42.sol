@@ -73,15 +73,13 @@ Auditors inspect:
 =========================================================
 */
 
-contract InternalFunctionFlow {
-
+contract InternalFunctionFlowVul {
     /*
         STORAGE VARIABLES
     */
     mapping(address => uint256) public balances;
 
     uint256 public totalDeposits;
-
     /*
     =====================================================
     EXTERNAL ENTRY FUNCTION
@@ -104,10 +102,7 @@ contract InternalFunctionFlow {
             STEP 2:
             Update balance using internal function.
         */
-        _updateBalance(
-            msg.sender,
-            _amount
-        );
+        _updateBalance(msg.sender,_amount);
 
         /*
             STEP 3:
@@ -122,25 +117,13 @@ contract InternalFunctionFlow {
     =====================================================
     */
 
-    function _validateAmount(
-        uint256 _amount
-    )
-        internal
-        pure
-    {
-
+    function _validateAmount(uint256 _amount)internal pure {
         /*
             Internal require check.
         */
-        require(
-            _amount > 0,
-            "Amount must be > 0"
-        );
+        require(_amount > 0,"Amount must be > 0");
 
-        require(
-            _amount <= 100,
-            "Amount too large"
-        );
+        require(_amount <= 100,"Amount too large");
     }
 
     /*
@@ -149,13 +132,7 @@ contract InternalFunctionFlow {
     =====================================================
     */
 
-    function _updateBalance(
-        address _user,
-        uint256 _amount
-    )
-        internal
-    {
-
+    function _updateBalance(address _user,uint256 _amount)internal{
         /*
             Internal storage update.
         */
@@ -168,14 +145,7 @@ contract InternalFunctionFlow {
     =====================================================
     */
 
-    function _calculateBonus(
-        uint256 _amount
-    )
-        internal
-        pure
-        returns (uint256)
-    {
-
+    function _calculateBonus(uint256 _amount)internal pure returns (uint256){
         /*
             Bonus = 10%
         */
@@ -188,33 +158,22 @@ contract InternalFunctionFlow {
     =====================================================
     */
 
-    function depositWithBonus(
-        uint256 _amount
-    )
-        external
-    {
-
+    function depositWithBonus(uint256 _amount)external{
         /*
             Internal validation call.
         */
         _validateAmount(_amount);
-
         /*
             Internal calculation.
         */
-        uint256 bonus =
-            _calculateBonus(_amount);
+        uint256 bonus =_calculateBonus(_amount);
 
         /*
             Internal balance update.
         */
-        _updateBalance(
-            msg.sender,
-            _amount + bonus
-        );
+        _updateBalance( msg.sender, _amount + bonus);
 
-        totalDeposits +=
-            (_amount + bonus);
+        totalDeposits +=(_amount + bonus);
     }
 }
 
@@ -543,3 +502,139 @@ IMPORTANT CONCEPTS LEARNED
 
 =========================================================
 */
+
+//patched code 
+contract InternalFunctionFlow {
+    /*
+        STORAGE VARIABLES
+    */
+    mapping(address => uint256) public balances;
+    address public owner;
+    uint256 public totalDeposits;
+
+    constructor(){
+        owner=msg.sender;
+    }
+    /*
+    =====================================================
+    EXTERNAL ENTRY FUNCTION
+    =====================================================
+    */
+
+    function deposit(uint256 _amount) external{
+        /*
+            STEP 1:
+            Validate input using internal function.
+        */
+        _validateAmount(_amount);
+
+        /*
+            STEP 2:
+            Update balance using internal function.
+        */
+        _updateBalance(msg.sender,_amount);
+
+        /*
+            STEP 3:
+            Update global state.
+        */
+        totalDeposits += _amount;
+    }
+
+    function withdraw(uint256 _amount) public{
+        _withdrawInternal(msg.sender, _amount);
+    }
+    /*
+    =====================================================
+    INTERNAL VALIDATION FUNCTION
+    =====================================================
+    */
+
+    function _validateAmount(uint256 _amount)internal pure {
+        /*
+            Internal require check.
+        */
+        require(_amount > 0,"Amount must be > 0");
+
+        require(_amount <= 100,"Amount too large");
+    }
+
+    /*
+    =====================================================
+    INTERNAL STATE UPDATE FUNCTION
+    =====================================================
+    */
+
+    function _updateBalance(address _user,uint256 _amount)internal{
+        /*
+            Internal storage update.
+        */
+        balances[_user] += _amount;
+    }
+
+    /*
+    =====================================================
+    INTERNAL CALCULATION FUNCTION
+    =====================================================
+    */
+
+    function _calculateBonus(uint256 _amount)internal pure returns (uint256){
+        /*
+            Bonus = 10%
+        */
+        return (_amount * 10) / 100;
+    }
+
+    /*
+    =====================================================
+    EXTERNAL FUNCTION USING INTERNAL HELPER
+    =====================================================
+    */
+
+    function depositWithBonus(uint256 _amount)external{
+        /*
+            Internal validation call.
+        */
+        _validateAmount(_amount);
+        /*
+            Internal calculation.
+        */
+        uint256 bonus =_calculateBonus(_amount);
+
+        /*
+            Internal balance update.
+        */
+        _updateBalance( msg.sender, _amount + bonus);
+
+        totalDeposits +=(_amount + bonus);
+    }
+// Internal withdraw helper
+    function _withdrawInternal(address _user,uint256 _amt)internal returns (uint256){
+        require(balances[_user]>=_amt,"Insufficient balance");
+        uint256 fee=_calcFee(_amt);
+        uint256 finalAmt=_amt-fee;
+
+        balances[_user] -= _amt;
+        totalDeposits -= _amt;
+        return finalAmt;
+    } 
+
+    function _calcFee(uint256 _fee)internal pure returns (uint256){
+        return (_fee*5)/100;
+    }
+
+    function _onlyOwner()internal view {
+        require(msg.sender==owner,"Not owner");
+    }
+
+    function emergencyReset(address _user)external  {
+        _onlyOwner();
+        balances[_user]=0;
+    }
+}
+
+contract childContract is InternalFunctionFlow {
+    function claimReward(address _user)external {
+        _updateBalance(_user, 25);
+    }
+}

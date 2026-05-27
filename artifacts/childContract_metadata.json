@@ -6,11 +6,6 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
-				"stateMutability": "nonpayable",
-				"type": "constructor"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -27,6 +22,19 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_user",
+						"type": "address"
+					}
+				],
+				"name": "claimReward",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -121,7 +129,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"phase2/prac42.sol": "InternalFunctionFlow"
+			"phase2/prac42.sol": "childContract"
 		},
 		"evmVersion": "osaka",
 		"libraries": {},
