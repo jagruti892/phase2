@@ -638,24 +638,23 @@ Proof of Concept:
     3. Stale Reward Calculation:
 
         Assume:
-        balances[Alice] = 100
+            balances[Alice] = 100
 
         Alice calls:
-        badRewardUpdate(50)
+            badRewardUpdate(50)
 
         The contract calculates:
-        rewards[Alice] = 100 / 10 = 10
+            rewards[Alice] = 100 / 10 = 10
 
         After calculation:
-        balances[Alice] += 50
+            balances[Alice] += 50
 
         Final state becomes:
-
-        balances[Alice] = 150
-        rewards[Alice] = 10
+            balances[Alice] = 150
+            rewards[Alice] = 10
 
         Correct reward should be:
-        150 / 10 = 15
+            150 / 10 = 15
 
 The reward calculation becomes stale and incorrect.
 
