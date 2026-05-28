@@ -6,9 +6,23 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
-				"stateMutability": "nonpayable",
-				"type": "constructor"
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "Deposited",
+				"type": "event"
 			},
 			{
 				"inputs": [
@@ -33,7 +47,7 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_amount",
+						"name": "_amt",
 						"type": "uint256"
 					}
 				],
@@ -43,26 +57,13 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_user",
-						"type": "address"
-					}
-				],
-				"name": "emergencyReset",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
 				"inputs": [],
-				"name": "owner",
+				"name": "executionCount",
 				"outputs": [
 					{
-						"internalType": "address",
+						"internalType": "uint256",
 						"name": "",
-						"type": "address"
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -70,7 +71,20 @@
 			},
 			{
 				"inputs": [],
-				"name": "paused",
+				"name": "failedAttempts",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "locked",
 				"outputs": [
 					{
 						"internalType": "bool",
@@ -79,19 +93,6 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bool",
-						"name": "_status",
-						"type": "bool"
-					}
-				],
-				"name": "setPaused",
-				"outputs": [],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			}
 		],
@@ -108,7 +109,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"phase2/prac44.sol": "ModifierExecutionFlowVul"
+			"phase2/prac45.sol": "PostExecutionModifier"
 		},
 		"evmVersion": "osaka",
 		"libraries": {},
@@ -122,12 +123,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"phase2/prac44.sol": {
-			"keccak256": "0x19609073748cc61842be4a3caa61b1341883d82cfcffc5aeab9ac5ba8a2e9bb7",
+		"phase2/prac45.sol": {
+			"keccak256": "0xe229ddf673d4b4fb55ca646cf76a13432680bb1439dc70972511d3039d0804fe",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://085a9b2cbcbf15b12f996aa1ea4371544c5d9e18737781fd3db3191ac2047022",
-				"dweb:/ipfs/QmVv9CQyxTFhP2AyhxAQJryTeKkizbpG8JcND4vwpGY99H"
+				"bzz-raw://b978a6fe7eb9f312ac08f0cf746380ceb3b080054735a30d75a4580a2b28fc62",
+				"dweb:/ipfs/QmNRjH1nzFXcpvsopMkLm6iFKgq3dw29eEM7cKahUifyvj"
 			]
 		}
 	},

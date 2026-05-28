@@ -579,161 +579,164 @@ IMPORTANT CONCEPTS LEARNED
 AUDIT REPORT
 =========================================================
 
-Title: Missing Blacklist Protection and Transaction Limit Validation
+Title: Missing Execution Restriction Modifiers
 
-Severity: Medium
+Severity: Low
 
 Reason:
-The vulnerable contract lacks blacklist-based
-execution restriction and transaction-limit
-protection on deposit operations.
+The vulnerable contract lacks additional
+execution restriction mechanisms on the
+deposit() function.
 
----------------------------------------------------------
+
 Location
----------------------------------------------------------
+    Contract:
+    ModifierExecutionFlowVul
 
-Contract: ModifierExecutionFlowVul
+    Function:
+    deposit(uint256 _amount)
 
-Affected Function:
-deposit(uint256 _amount)
-
----------------------------------------------------------
 Vulnerability Description
----------------------------------------------------------
 
 The deposit() function only uses the:
 
-- whenNotPaused modifier
+* whenNotPaused modifier
 
-but lacks:
+but does not implement:
 
 1. blacklist validation
 2. transaction-limit restriction
-3. post-execution event logging
+3. post-execution event emission
 
 As a result:
 
-- blacklisted users can still interact
-- very large deposits may execute
-- protocol activity lacks execution tracing
+* restricted users cannot be blocked
+* deposits above intended operational limits
+  may execute
+* protocol activity lacks execution logging
 
-The vulnerable implementation does not fully
-protect execution flow using modifiers.
+The execution flow is functional,
+but operational protections are incomplete.
 
----------------------------------------------------------
+
+
 Impact
----------------------------------------------------------
 
-An attacker or restricted user may continue
-interacting with the protocol.
+Users intended to be restricted may still
+interact with the protocol.
 
-Large transactions may also bypass intended
-execution limits.
+Additionally, the lack of transaction-limit
+controls may allow unexpectedly large
+balance growth.
 
 Potential consequences include:
 
-- abuse by blocked users
-- unexpected balance growth
-- accounting manipulation
-- operational monitoring issues
+* unrestricted protocol interaction
+* unexpected balance accumulation
+* reduced operational monitoring
+* weaker administrative controls
 
-If integrated into real systems such as:
+In larger production systems such as:
 
-- DeFi protocols
-- staking systems
-- governance contracts
-- treasury systems
+* DeFi protocols
+* staking platforms
+* governance systems
+* treasury contracts
 
-missing execution restrictions may create
-security and operational risks.
+missing execution restrictions may increase
+operational and security risk.
 
----------------------------------------------------------
+
 Proof of Concept
----------------------------------------------------------
 
-STEP 1:
-Deploy contract
+        STEP 1:
+        Deploy contract
 
----------------------------------------------------------
 
-STEP 2:
-Owner keeps contract unpaused
+        STEP 2:
+        Owner keeps protocol active
+        paused = false
 
-paused = false
 
----------------------------------------------------------
+        STEP 3:
+        Attacker calls:
+        deposit(100)
+        STATE:
+        balances[attacker] = 100
 
-STEP 3:
-Attacker calls:
+        STEP 4:
+        Attacker calls:
+        deposit(100000
+        Observation:
+        Transaction succeeds because:
 
-deposit(100)
+        * no transaction-limit modifier exists
+        * no maximum deposit restriction exists
 
-STATE:
+        STATE:
+        balances[attacker] = 100100
 
-balances[attacker] = 100
 
----------------------------------------------------------
+        STEP 5:
+        Assume attacker should be blocked
+        from protocol interaction.
 
-STEP 4:
-Attacker calls:
+        Observation:
+        No blacklist validation exists.
+        Attacker continues interacting normally.
 
-deposit(100000)
 
-Observation:
+        STEP 6:
+        Review transaction logs.
+        Observation:
+        No event emitted after deposit execution.
 
-Transaction succeeds because:
+Off-chain monitoring and execution tracking
+become more difficult.
 
-- no transaction-limit modifier exists
-- no maximum execution restriction exists
 
-STATE:
 
-balances[attacker] = 100100
-
----------------------------------------------------------
-
-STEP 5:
-Assume attacker should be blocked
-
-Observation:
-
-No blacklist mechanism exists.
-
-Attacker can still interact normally.
-
----------------------------------------------------------
-
-STEP 6:
-Check execution logs
-
-Observation:
-
-No event emitted after deposit execution.
-
-Off-chain monitoring becomes harder.
-
----------------------------------------------------------
 Root Cause
----------------------------------------------------------
 
-The vulnerable contract failed to implement:
+The vulnerable implementation failed to add:
 
-- blacklist modifier
-- transaction-limit modifier
-- post-execution event emission
+* blacklist execution restriction
+* transaction-limit validation
+* post-execution event emission
 
-The deposit() execution flow lacks
-important modifier-based protections.
+The deposit() function lacks several
+modifier-based operational protections.
 
----------------------------------------------------------
 Recommendation
----------------------------------------------------------
 
 Add:
 
-1. blacklist validation modifier
+1. blacklist modifier
 2. transaction-limit modifier
-3. execution event emission
+3. post-execution event emission
+
+Example:
+
+modifier checkUser(address _user) {
+require(
+blacklisted[_user] == false,
+"User blacklisted"
+);
+_;
+}
+
+modifier transactionLimit(uint256 _amt) {
+require(
+_amt <= 100,
+"Limit reached"
+);
+_;
+}
+
+event Deposited(
+address indexed user,
+uint256 amount
+);
 */
 
 //patched code 
@@ -805,9 +808,7 @@ contract ModifierExecutionFlow {
             PRE-EXECUTION VALIDATION
         */
         require(
-            paused == false,
-            "Contract paused"
-        );
+            paused == false,"Contract paused" );
 
         /*
             Continue to function body.
@@ -880,11 +881,6 @@ contract ModifierExecutionFlow {
         emit deposited(msg.sender, _amount);
     }
 
-    /*
-    =====================================================
-    MULTIPLE MODIFIERS
-    =====================================================
-    */
 
     function emergencyReset(
         address _user
