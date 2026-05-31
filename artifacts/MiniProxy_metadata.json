@@ -9,7 +9,7 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_target",
+						"name": "_impl",
 						"type": "address"
 					}
 				],
@@ -17,21 +17,12 @@
 				"type": "constructor"
 			},
 			{
-				"inputs": [],
-				"name": "lastSuccess",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
+				"stateMutability": "payable",
+				"type": "fallback"
 			},
 			{
 				"inputs": [],
-				"name": "target",
+				"name": "implementation",
 				"outputs": [
 					{
 						"internalType": "address",
@@ -40,27 +31,6 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "triggerFallback",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "triggerFallbackWithETH",
-				"outputs": [],
-				"stateMutability": "payable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "triggerReceive",
-				"outputs": [],
-				"stateMutability": "payable",
 				"type": "function"
 			}
 		],
@@ -77,7 +47,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"phase2/prac54.sol": "FallbackCaller"
+			"phase2/prac54.sol": "MiniProxy"
 		},
 		"evmVersion": "osaka",
 		"libraries": {},
@@ -92,11 +62,11 @@
 	},
 	"sources": {
 		"phase2/prac54.sol": {
-			"keccak256": "0x96da019d44449c7deffbc538b56b5d9d3496b4b327c75bea86a9c79e53eb04ba",
+			"keccak256": "0xe39c0c74bbc8786228fe8d8f3f4a552da73adfa81809111123cac9e9b76ffb40",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c6581a652431bc0b7b4466bbde24d8bb227e2940f1243c3fabfb21c439a3693b",
-				"dweb:/ipfs/QmNhb1Cqz7FmVxRP65pdqB7CC5VU34JsfgbipwLTAGgmdS"
+				"bzz-raw://4ed68f3251b7326ca7de3370d065cabbb783ee5d3e91144ead17299f147e4c72",
+				"dweb:/ipfs/QmdhtFtjPyM3xRncdWRpzGQh3LXwRetpWHvpRAfdchGMQ8"
 			]
 		}
 	},

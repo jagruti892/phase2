@@ -689,7 +689,6 @@ Use explicit functions whenever possible.
 
 //patched code 
 contract TargetContract {
-
     /*
         TRACK FALLBACK EXECUTION
     */
@@ -713,16 +712,9 @@ contract TargetContract {
     =====================================================
     */
 
-    event FallbackTriggered(
-        address indexed sender,
-        uint256 value,
-        bytes data
-    );
+    event FallbackTriggered(address indexed sender,uint256 value,bytes data);
 
-    event ReceiveTriggered(
-        address indexed sender,
-        uint256 value
-    );
+    event ReceiveTriggered(address indexed sender,uint256 value);
 
     /*
     =====================================================
@@ -731,11 +723,7 @@ contract TargetContract {
     */
 
     modifier nonReentrant() {
-        require(
-            !locked,
-            "Reentrant call blocked"
-        );
-
+        require(!locked,"Reentrant call blocked");
         locked = true;
         _;
         locked = false;
@@ -750,23 +738,14 @@ contract TargetContract {
     constructor() {
         trustedCaller = msg.sender;
     }
-
     /*
     =====================================================
     UPDATE TRUSTED CALLER
     =====================================================
     */
 
-    function setTrustedCaller(
-        address _newCaller
-    )
-        external
-    {
-        require(
-            msg.sender == trustedCaller,
-            "Not authorized"
-        );
-
+    function setTrustedCaller(address _newCaller ) external {
+        require(msg.sender == trustedCaller,"Not authorized");
         trustedCaller = _newCaller;
     }
 
@@ -776,24 +755,11 @@ contract TargetContract {
     =====================================================
     */
 
-    fallback()
-        external
-        payable
-        nonReentrant
-    {
-        require(
-            msg.sender == trustedCaller,
-            "Unauthorized caller"
-        );
+    fallback()external payable nonReentrant{
+        require(msg.sender == trustedCaller,"Unauthorized caller");
 
-        emit FallbackTriggered(
-            msg.sender,
-            msg.value,
-            msg.data
-        );
-
+        emit FallbackTriggered( msg.sender, msg.value,msg.data);
         fallbackCounter++;
-
         receivedETH += msg.value;
     }
 
@@ -808,11 +774,7 @@ contract TargetContract {
         payable
         nonReentrant
     {
-        emit ReceiveTriggered(
-            msg.sender,
-            msg.value
-        );
-
+        emit ReceiveTriggered(msg.sender,msg.value);
         receivedETH += msg.value;
     }
 
@@ -843,10 +805,7 @@ contract FallbackCaller {
 
     bool public lastSuccess;
 
-    constructor(
-        address _target
-    )
-    {
+    constructor(address _target){
         target = _target;
     }
 
@@ -856,16 +815,8 @@ contract FallbackCaller {
     =====================================================
     */
 
-    function triggerFallback()
-        external
-    {
-        (
-            bool success,
-        ) = target.call(
-            abi.encodeWithSignature(
-                "doesNotExist()"
-            )
-        );
+    function triggerFallback()external{
+        ( bool success,) = target.call(abi.encodeWithSignature("doesNotExist()"));
 
         lastSuccess = success;
     }
@@ -880,14 +831,7 @@ contract FallbackCaller {
         external
         payable
     {
-        (
-            bool success,
-        ) = target.call{value: msg.value}(
-            abi.encodeWithSignature(
-                "fakeFunction()"
-            )
-        );
-
+        (bool success,) = target.call{value: msg.value}(abi.encodeWithSignature("fakeFunction()" ) );
         lastSuccess = success;
     }
 
@@ -901,10 +845,7 @@ contract FallbackCaller {
         external
         payable
     {
-        (
-            bool success,
-        ) = target.call{value: msg.value}("");
-
+        (bool success,) = target.call{value: msg.value}("");
         lastSuccess = success;
     }
 }
@@ -914,8 +855,6 @@ contract FallbackCaller {
 REENTRANCY ATTACK SIMULATION
 =========================================================
 
-Educational only.
-
 Used to demonstrate how
 fallback()/receive() can execute
 automatically during ETH transfers.
@@ -923,15 +862,10 @@ automatically during ETH transfers.
 */
 
 contract ReentrantAttacker {
-
     TargetContract public target;
-
     uint256 public attackCounter;
 
-    constructor(
-        address _target
-    )
-    {
+    constructor(address _target){
         target = TargetContract(payable(_target));
     }
 
@@ -956,46 +890,10 @@ contract ReentrantAttacker {
 
         if(attackCounter < 2)
         {
-            (bool success,) =
-                address(target).call(
-                    abi.encodeWithSignature(
-                        "doesNotExist()"
-                    )
-                );
+            (bool success,) = address(target).call(abi.encodeWithSignature("doesNotExist()"));
 
             success;
         }
     }
 }
 
-contract Logic {
-
-    function version()
-        external
-        pure
-        returns(string memory)
-    {
-        return "Logic V1";
-    }
-}
-
-contract MiniProxy {
-
-    address public implementation;
-
-    constructor(address _impl) {
-        implementation = _impl;
-    }
-
-    fallback() external payable {
-
-        (bool success, bytes memory data) =
-            implementation.delegatecall(msg.data);
-
-        require(success, "Delegatecall failed");
-
-        assembly {
-            return(add(data, 32), mload(data))
-        }
-    }
-}

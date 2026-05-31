@@ -7,6 +7,78 @@
 		"abi": [
 			{
 				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "values",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "data",
+						"type": "bytes"
+					}
+				],
+				"name": "FallbackTriggered",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "ReceiveTriggered",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "Withdraw",
+				"type": "event"
+			},
+			{
+				"stateMutability": "payable",
+				"type": "fallback"
+			},
+			{
+				"inputs": [],
 				"name": "contractBalance",
 				"outputs": [
 					{
@@ -20,7 +92,33 @@
 			},
 			{
 				"inputs": [],
+				"name": "fallbackCounter",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "lastSender",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
 				"outputs": [
 					{
 						"internalType": "address",
@@ -58,6 +156,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "withdrawEth",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"stateMutability": "payable",
 				"type": "receive"
 			}
@@ -90,11 +201,11 @@
 	},
 	"sources": {
 		"phase2/prac55.sol": {
-			"keccak256": "0x2b1d86acb59b7676b018d648a7eab776c4efa500ce341a69897a5720a77c1b70",
+			"keccak256": "0x84b5cbc881f2e601465e17c26e84cbb983b328d8040855107a37aff5a7986481",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://2924ede73ff9cdb3017a4b394e49b1f72f9201fa17081aa4853c636a4e52b45c",
-				"dweb:/ipfs/QmXxCB8y6yK7kkYrSkivkCayq5vTkV4ouGaXrix4Z2HCw4"
+				"bzz-raw://a5b9246beaebf2284f43519c8b6bdeb98f79cb9cb992afb3999ceeaba94c68f8",
+				"dweb:/ipfs/QmPujammKWmnkLoZF7YrZ5YiurvFXYSR6WjpP2Asz9E8Un"
 			]
 		}
 	},

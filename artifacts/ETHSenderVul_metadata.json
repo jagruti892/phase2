@@ -48,13 +48,6 @@
 				"outputs": [],
 				"stateMutability": "payable",
 				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "sendEthwithData",
-				"outputs": [],
-				"stateMutability": "payable",
-				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -70,7 +63,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"phase2/prac55.sol": "ETHSender"
+			"phase2/prac55.sol": "ETHSenderVul"
 		},
 		"evmVersion": "osaka",
 		"libraries": {},

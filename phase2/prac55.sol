@@ -161,12 +161,12 @@ contract ETHSenderVul {
     */
     bool public lastSuccess;
 
+
     /*
         CONSTRUCTOR
     */
     constructor(address payable _receiver)
     {
-
         receiver = _receiver;
     }
 
@@ -599,3 +599,296 @@ IMPORTANT CONCEPTS LEARNED
 */
 
 // patched code 
+/*
+=========================================================
+RECEIVER CONTRACT
+=========================================================
+*/
+
+/*
+Audit Report
+
+Title: Locked ETH, Missing Receiver Validation, and Missing Event Logging
+
+Severity: Medium
+
+Reason: ETH can become permanently locked, receiver configuration is not validated, and ETH transfers are not traceable through events.
+
+Location:
+
+Contract: ETHReceiverVul
+Function: receive()
+
+Contract: ETHSenderVul
+Function: constructor()
+
+Contract: ETHSenderVul
+Function: sendETH()
+
+Vulnerability Description:
+
+The system contains multiple security and operational issues:
+Locked ETH Risk
+The ETHReceiverVul contract accepts ETH through the receive() function and tracks received funds internally.
+However, no withdrawal mechanism exists.
+Any ETH received by the contract becomes permanently locked inside the contract.
+
+Missing Receiver Address Validation
+The ETHSenderVul constructor accepts any receiver address without validation.
+
+A zero address or unintended address may be supplied during deployment.
+This can result in failed transfers or incorrect configuration.
+
+Missing Event Logging
+ETH transfers and ETH reception occur without emitting any events.
+
+This reduces visibility for:
+users
+auditors
+monitoring tools
+analytics systems
+and makes ETH movement harder to track.
+
+Impact:
+
+Locked ETH Risk:
+ETH stored inside ETHReceiverVul cannot be recovered.
+Users may permanently lose access to deposited funds.
+
+Missing Receiver Validation:
+Incorrect receiver configuration may cause ETH transfer failures or unexpected behavior.
+
+Missing Event Logging:
+Protocol activity cannot be easily monitored or audited.
+Off-chain systems cannot reliably track ETH transfers.
+
+Proof of Concept:
+        1.Deploy ETHReceiverVul.
+        2.Deploy ETHSenderVul using the ETHReceiverVul address.
+        3.Call:sendETH()
+            with 1 ETH.
+        4.Call:
+            contractBalance()
+        Result:
+        Contract balance becomes 1 ETH.
+        5.Attempt to withdraw ETH.
+            Result:
+                No withdrawal function exists.
+                ETH remains permanently locked.
+
+        6.Deploy ETHSenderVul using:
+            address(0) as constructor input.
+        7.Call:
+            sendETH()
+            Result:
+                Transfer configuration is invalid.
+        8.Execute successful ETH transfers.
+            Result:
+        No custom event is emitted for either:
+            ETH reception
+            ETH transfer
+
+Root Cause:
+    ETHReceiverVul accepts ETH but provides no withdrawal mechanism.
+    ETHSenderVul constructor does not validate receiver addresses.
+    Neither contract emits events for critical ETH-related actions.
+
+Recommendation:
+    Add a secure ETH withdrawal function.
+    Validate receiver address during deployment.
+    Emit events whenever ETH is received or transferred.
+
+Examples:
+
+    require(_receiver != address(0),"Invalid receiver");
+
+    event ETHReceived(address indexed sender,uint256 amount);
+
+    event ETHSent(address indexed receiver,uint256 amount);
+*/
+//patched code
+contract ETHReceiver{
+
+    /*
+        TRACK TOTAL ETH RECEIVED
+    */
+    uint256 public totalReceived;
+
+    /*
+        TRACK LAST SENDER
+    */
+    address public lastSender;
+    address public owner;
+
+    /*
+        TRACK NUMBER OF RECEIVES
+    */
+    uint256 public receiveCounter;
+
+    uint256 public fallbackCounter;
+    
+
+    event ReceiveTriggered(address indexed sender,uint256 value);
+    event FallbackTriggered(address indexed sender,uint256 values,bytes data);
+    event Withdraw(address indexed user,uint256 amount);
+
+    constructor(){
+        owner=msg.sender;
+    }
+    /*
+    =====================================================
+    RECEIVE FUNCTION
+    =====================================================
+
+    Automatically executes when:
+    - ETH sent
+    - calldata EMPTY
+    */
+
+    receive()
+        external
+        payable
+    {
+
+        /*
+            msg.sender:
+            address sending ETH
+        */
+        lastSender = msg.sender;
+
+        /*
+            msg.value:
+            ETH amount received
+        */
+        totalReceived += msg.value;
+
+        /*
+            Track receive executions
+        */
+        receiveCounter++;
+
+        emit ReceiveTriggered(msg.sender, msg.value);
+    }
+
+       /*
+    =====================================================
+    FALLBACK
+    =====================================================
+
+    ETH + NON EMPTY calldata
+    OR
+    unknown function call
+    */
+    fallback() external payable {
+
+        lastSender = msg.sender;
+        totalReceived += msg.value;
+        fallbackCounter++;
+
+        emit FallbackTriggered(msg.sender, msg.value, msg.data);
+
+     }
+
+    function withdrawEth(uint256 _amount) external {
+    require(msg.sender==owner,"Not owner");
+    require(address(this).balance >= _amount, "Insufficient balance");
+
+    // (bool success,) =payable(owner).call{value:_amount}("");
+    // require(success,"Transfer failed");
+    payable(owner).transfer(_amount);
+    emit Withdraw(msg.sender,_amount);
+}
+
+    /*
+    =====================================================
+    CHECK CONTRACT ETH BALANCE
+    =====================================================
+    */
+
+    function contractBalance()
+        external
+        view
+        returns (uint256)
+    {
+
+        return address(this).balance;
+    }
+}
+
+/*
+=========================================================
+SENDER CONTRACT
+=========================================================
+*/
+
+contract ETHSender{
+
+    /*
+        STORE RECEIVER ADDRESS
+    */
+    address payable public receiver;
+
+    /*
+        TRACK LAST STATUS
+    */
+    bool public lastSuccess;
+
+    /*
+        CONSTRUCTOR
+    */
+    constructor(address payable _receiver)
+    {
+        receiver = _receiver;
+        require(receiver != address(0), "Invalid receiver");
+    }
+
+    /*
+    =====================================================
+    SEND ETH  TRIGGERS receive()
+    =====================================================
+    */
+
+    function sendETH()
+        external
+        payable
+    {
+
+        /*
+            ETH sent with EMPTY calldata.
+
+            This triggers:
+            receive()
+        */
+        (bool success, ) =
+            receiver.call{
+                value: msg.value
+            }("");
+
+        /*
+            Save result
+        */
+        lastSuccess = success;
+
+        /*
+            Ensure success
+        */
+        require(
+            success,
+            "ETH transfer failed"
+        );
+    }
+
+     /*
+    =====================================================
+    TRIGGERS fallback()
+    =====================================================
+    */
+    function sendEthwithData()external payable {
+        (bool sucess,)=receiver.call{value:msg.value}(
+            abi.encodeWithSignature("fakeFunc()")
+        );
+        lastSuccess = sucess;
+         require(sucess,"ETH transfer failed");
+    }
+}
+

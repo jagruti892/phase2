@@ -6,6 +6,55 @@
 	"output": {
 		"abi": [
 			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes",
+						"name": "data",
+						"type": "bytes"
+					}
+				],
+				"name": "FallbackTriggered",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "ReceiveTriggered",
+				"type": "event"
+			},
+			{
 				"stateMutability": "payable",
 				"type": "fallback"
 			},
@@ -49,6 +98,32 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_newCaller",
+						"type": "address"
+					}
+				],
+				"name": "setTrustedCaller",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "trustedCaller",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"stateMutability": "payable",
 				"type": "receive"
 			}
@@ -81,11 +156,11 @@
 	},
 	"sources": {
 		"phase2/prac54.sol": {
-			"keccak256": "0xba691e41dea294237224c060407789702b693d3158c7e06b9ae761c811bdd6c0",
+			"keccak256": "0x96da019d44449c7deffbc538b56b5d9d3496b4b327c75bea86a9c79e53eb04ba",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://7fa832953f993a1fa9ebc9281794292f7e714553a1d824dd0d32f479ba0f1bbd",
-				"dweb:/ipfs/QmNUquQsej2KFCod8tKu1U24qFYWQxb2suukjHFDxtpnAv"
+				"bzz-raw://c6581a652431bc0b7b4466bbde24d8bb227e2940f1243c3fabfb21c439a3693b",
+				"dweb:/ipfs/QmNhb1Cqz7FmVxRP65pdqB7CC5VU34JsfgbipwLTAGgmdS"
 			]
 		}
 	},

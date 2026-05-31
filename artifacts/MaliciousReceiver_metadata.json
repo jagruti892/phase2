@@ -8,8 +8,8 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address payable",
-						"name": "_receiver",
+						"internalType": "address",
+						"name": "_victim",
 						"type": "address"
 					}
 				],
@@ -18,12 +18,19 @@
 			},
 			{
 				"inputs": [],
-				"name": "lastSuccess",
+				"name": "attack",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "attackCounter",
 				"outputs": [
 					{
-						"internalType": "bool",
+						"internalType": "uint256",
 						"name": "",
-						"type": "bool"
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -31,10 +38,10 @@
 			},
 			{
 				"inputs": [],
-				"name": "receiver",
+				"name": "victim",
 				"outputs": [
 					{
-						"internalType": "address payable",
+						"internalType": "contract ETHReceiver",
 						"name": "",
 						"type": "address"
 					}
@@ -43,18 +50,8 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "sendETH",
-				"outputs": [],
 				"stateMutability": "payable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "sendEthwithData",
-				"outputs": [],
-				"stateMutability": "payable",
-				"type": "function"
+				"type": "receive"
 			}
 		],
 		"devdoc": {
@@ -70,7 +67,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"phase2/prac55.sol": "ETHSender"
+			"phase2/prac55.sol": "MaliciousReceiver"
 		},
 		"evmVersion": "osaka",
 		"libraries": {},
@@ -85,11 +82,11 @@
 	},
 	"sources": {
 		"phase2/prac55.sol": {
-			"keccak256": "0x84b5cbc881f2e601465e17c26e84cbb983b328d8040855107a37aff5a7986481",
+			"keccak256": "0x57466e796de13584426d990096b023a1b429525c5724070a8fe330379213816f",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://a5b9246beaebf2284f43519c8b6bdeb98f79cb9cb992afb3999ceeaba94c68f8",
-				"dweb:/ipfs/QmPujammKWmnkLoZF7YrZ5YiurvFXYSR6WjpP2Asz9E8Un"
+				"bzz-raw://a8f52136b066b2289b41faadd7be95be1672af97b0cf0c7cb4f51ac6dc6f57a4",
+				"dweb:/ipfs/QmQLdN6WEuQQRY9k31y1wyBPuxkate7ohfPUJ1uqijfia6"
 			]
 		}
 	},

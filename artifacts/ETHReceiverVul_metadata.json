@@ -6,24 +6,13 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [
-					{
-						"internalType": "address payable",
-						"name": "_receiver",
-						"type": "address"
-					}
-				],
-				"stateMutability": "nonpayable",
-				"type": "constructor"
-			},
-			{
 				"inputs": [],
-				"name": "lastSuccess",
+				"name": "contractBalance",
 				"outputs": [
 					{
-						"internalType": "bool",
+						"internalType": "uint256",
 						"name": "",
-						"type": "bool"
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -31,10 +20,10 @@
 			},
 			{
 				"inputs": [],
-				"name": "receiver",
+				"name": "lastSender",
 				"outputs": [
 					{
-						"internalType": "address payable",
+						"internalType": "address",
 						"name": "",
 						"type": "address"
 					}
@@ -44,17 +33,33 @@
 			},
 			{
 				"inputs": [],
-				"name": "sendETH",
-				"outputs": [],
-				"stateMutability": "payable",
+				"name": "receiveCounter",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
 				"inputs": [],
-				"name": "sendEthwithData",
-				"outputs": [],
-				"stateMutability": "payable",
+				"name": "totalReceived",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
+			},
+			{
+				"stateMutability": "payable",
+				"type": "receive"
 			}
 		],
 		"devdoc": {
@@ -70,7 +75,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"phase2/prac55.sol": "ETHSender"
+			"phase2/prac55.sol": "ETHReceiverVul"
 		},
 		"evmVersion": "osaka",
 		"libraries": {},
