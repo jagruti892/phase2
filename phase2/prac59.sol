@@ -79,7 +79,7 @@ TARGET CONTRACT
 =========================================================
 */
 
-contract Rejector {
+contract RejectorVul {
 
     /*
         TRACK CALL COUNT
@@ -138,15 +138,13 @@ CALLER CONTRACT
 =========================================================
 */
 
-contract ExternalCallHandler {
+contract ExternalCallHandlerVul {
 
     /*
         TRACK RESULTS
     */
     bool public lastSuccess;
-
     bytes public lastData;
-
     uint256 public localCounter;
 
     /*
@@ -651,3 +649,268 @@ IMPORTANT CONCEPTS LEARNED
 
 =========================================================
 */
+
+/*
+Audit Report
+
+Title: Unsafe External Call Handling in ExternalCallHandlerVul
+
+Severity: Medium
+
+Reason: External calls can fail or revert, leading to unexpected transaction reverts and potential denial-of-service conditions.
+
+Location:
+
+Contract: ExternalCallHandlerVul
+Functions: safeExternalCall(), triggerFailure(), sendETH()
+
+Vulnerability Description:
+The ExternalCallHandlerVul contract interacts with external contracts using low-level call().
+Although the return value (success) is checked, the contract still depends on external contract behavior.
+
+The target contract RejectorVul is designed to always revert or reject ETH, which demonstrates that external calls are not reliable and can intentionally fail.
+
+This introduces risk where contract execution depends on untrusted external contracts.
+
+Impact:
+An attacker or malicious external contract can:
+
+- Force transaction reverts
+- Block execution flow (Denial of Service)
+- Reject ETH transfers
+- Cause dependent logic failure
+
+If this pattern is used in critical systems such as:
+
+- token transfers
+- lending protocols
+- vault withdrawals
+
+then it may lead to service disruption or blocked funds movement.
+
+Proof of Concept:
+        1.Deploy RejectorVul contract.
+        2.Call:
+            safeExternalCall(RejectorVul)
+
+            Result:
+            - normalFunction executes successfully
+            - call returns success = true
+        3.Call:
+            triggerFailure(RejectorVul)
+
+            Execution:
+            - localCounter increments
+            - external call triggers alwaysFail()
+            - transaction reverts completely
+        4.Call:
+            sendETH(RejectorVul)
+
+            Execution:
+            - ETH is sent
+            - receive() in Rejector reverts
+            - success = false
+            - require(success) causes full revert
+
+Root Cause:
+    The contract depends on external contract execution without isolation or fallback strategy.
+    It assumes external calls will behave correctly.
+
+Recommendation:
+Use safer external call patterns:
+
+- Use try/catch for external calls
+- Avoid critical logic before external calls
+- Handle failures without full revert when possible
+- Minimize dependency on external contract execution
+
+Example:
+try IExternal(_target).normalFunction() {
+    lastSuccess = true;
+} catch {
+    lastSuccess = false;
+}
+*/
+//patched code
+contract Rejector {
+
+    /*
+        TRACK CALL COUNT
+    */
+    uint256 public callCounter;
+
+    /*
+    =====================================================
+    NORMAL FUNCTION
+    =====================================================
+    */
+
+    function normalFunction()
+        external
+    {
+
+        callCounter++;
+    }
+
+    /*
+    =====================================================
+    ALWAYS FAIL
+    =====================================================
+
+    Intentionally reverts.
+    */
+
+    function alwaysFail()
+        external
+        pure
+    {
+
+        revert("Intentional failure");
+    }
+
+    /*
+    =====================================================
+    REJECT ETH
+    =====================================================
+
+    Reject plain ETH transfers.
+    */
+
+    receive()
+        external
+        payable
+    {
+
+        revert("ETH rejected");
+    }
+}
+
+/*
+=========================================================
+CALLER CONTRACT
+=========================================================
+*/
+
+contract ExternalCallHandler {
+
+    /*
+        TRACK RESULTS
+    */
+    bool public lastSuccess;
+    string public lastData;
+    uint256 public localCounter;
+
+    /*
+    =====================================================
+    SAFE EXTERNAL CALL
+    =====================================================
+    */
+// LOW LEVEL CALL
+    function safeExternalCall( address _target)external{
+        /*
+            Local state update BEFORE call.
+        */
+        localCounter++;
+
+        /*
+            Low-level external call.
+        */
+        (bool success, bytes memory data) =
+            _target.call(
+                abi.encodeWithSignature(
+                    "normalFunction()"
+                )
+            );
+
+        /*
+            Store results.
+        */
+        lastSuccess = success;
+
+        if (!success) {
+            lastData = _getRevertMsg(data);
+        }
+    }
+
+    /*
+    =====================================================
+    CALL FAILING FUNCTION
+    =====================================================
+    */
+// FAILURE CALL (NO REVERT, JUST HANDLE)
+    function triggerFailure(address _target) external  {
+        /*
+            Local state update FIRST.
+        */
+        localCounter++;
+
+        /*
+            Call reverting function.
+        */
+        (bool success, bytes memory data) =
+            _target.call(
+                abi.encodeWithSignature(
+                    "alwaysFail()"
+                )
+            );
+
+        /*
+            Save results.
+        */
+        lastSuccess = success;
+
+       if (!success) {
+            lastData = _getRevertMsg(data);
+            // IMPORTANT: we do NOT revert
+        }
+    }
+// TRY / CATCH (HIGH LEVEL CALL)
+    function tryCatchCall(address _target)external {
+        localCounter++;
+
+        try Rejector(payable (_target)).normalFunction(){
+            lastSuccess=true;
+            lastData = "Sucess";
+        }catch Error(string memory reason) {
+            lastSuccess=false;
+            lastData=reason;
+        }catch {
+            lastSuccess=false;
+            lastData="Unknown Error";
+        }
+    }
+
+    /*
+    =====================================================
+    SEND ETH TO REJECTOR
+    =====================================================
+    */
+
+    function sendETH(address payable _target) external payable{
+        /*
+            Attempt ETH transfer.
+        */
+        (bool success, bytes memory data) =
+            _target.call{
+                value: msg.value
+            }("");
+
+        /*
+            Save result.
+        */
+        lastSuccess = success;
+
+       if (!success) {
+            lastData = _getRevertMsg(data);
+        }
+    }
+//REVERT DECODER
+    function _getRevertMsg(bytes memory data)internal pure returns(string memory) {
+        if(data.length<68) return "Unknown Error";
+
+        assembly{
+            data:=add(data,0x04)
+        }
+        return abi.decode(data,(string));
+    }
+}
