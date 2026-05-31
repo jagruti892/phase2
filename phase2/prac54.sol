@@ -597,8 +597,99 @@ IMPORTANT CONCEPTS LEARNED
 =========================================================
 */
 
+/*
+Audit Report
+
+Title: Unrestricted Fallback Execution via Arbitrary Low-Level Calls
+
+Severity: Low
+
+Reason: Unknown calldata can trigger fallback() execution without validation.
+
+Location:
+
+Contract: TargetContractVul
+Function: fallback()
+
+Contract: FallbackCallerVul
+Function: triggerFallback()
+Function: triggerFallbackWithETH()
+
+Vulnerability Description:
+
+The TargetContractVul contract accepts arbitrary unknown function calls through its payable fallback() function.
+
+The FallbackCallerVul contract can send arbitrary calldata using low-level call(), causing fallback() to execute automatically.
+
+Because fallback() performs state updates without validating the caller or calldata, any user can repeatedly trigger fallback execution and modify fallbackCounter and receivedETH.
+
+Impact:
+
+An attacker can:
+
+Trigger fallback() repeatedly.
+Artificially increase fallbackCounter.
+Manipulate execution statistics.
+Send unexpected calldata to execute hidden fallback logic.
+
+If fallback() later contains critical business logic such as:
+
+access control checks
+administrative operations
+token transfers
+
+then arbitrary callers may be able to abuse protocol functionality.
+
+Proof of Concept:
+
+Deploy TargetContractVul.
+Deploy FallbackCallerVul with the TargetContractVul address.
+Call:
+triggerFallback()
+The low-level call executes:
+target.call(
+abi.encodeWithSignature(
+"doesNotExist()"
+)
+)
+Since doesNotExist() is not implemented, fallback() executes automatically.
+fallbackCounter increases successfully.
+Repeat the call multiple times.
+fallbackCounter continues increasing.
+
+Root Cause:
+
+The fallback() function accepts all unknown calldata.
+
+No validation is performed on:
+
+msg.sender
+msg.data
+caller permissions
+
+As a result, arbitrary low-level calls can trigger state-changing execution.
+
+Recommendation:
+
+Validate callers before performing state changes inside fallback().
+
+Example:
+
+require(
+msg.sender == trustedCaller,
+"Unauthorized caller"
+);
+
+Additionally:
+
+Minimize logic inside fallback().
+Avoid sensitive operations in fallback().
+Use explicit functions whenever possible.
+*/
+
 //patched code 
 contract TargetContract {
+
     /*
         TRACK FALLBACK EXECUTION
     */
@@ -607,43 +698,120 @@ contract TargetContract {
     uint256 public receivedETH;
 
     /*
+        AUTHORIZED CALLER
+    */
+    address public trustedCaller;
+
+    /*
+        REENTRANCY LOCK
+    */
+    bool private locked;
+
+    /*
+    =====================================================
+    EVENTS
+    =====================================================
+    */
+
+    event FallbackTriggered(
+        address indexed sender,
+        uint256 value,
+        bytes data
+    );
+
+    event ReceiveTriggered(
+        address indexed sender,
+        uint256 value
+    );
+
+    /*
+    =====================================================
+    NON REENTRANT
+    =====================================================
+    */
+
+    modifier nonReentrant() {
+        require(
+            !locked,
+            "Reentrant call blocked"
+        );
+
+        locked = true;
+        _;
+        locked = false;
+    }
+
+    /*
+    =====================================================
+    CONSTRUCTOR
+    =====================================================
+    */
+
+    constructor() {
+        trustedCaller = msg.sender;
+    }
+
+    /*
+    =====================================================
+    UPDATE TRUSTED CALLER
+    =====================================================
+    */
+
+    function setTrustedCaller(
+        address _newCaller
+    )
+        external
+    {
+        require(
+            msg.sender == trustedCaller,
+            "Not authorized"
+        );
+
+        trustedCaller = _newCaller;
+    }
+
+    /*
     =====================================================
     FALLBACK FUNCTION
     =====================================================
-
-    Triggered when:
-    - unknown function called
-    - calldata unmatched
     */
 
-    event FallbackTriggered(address sender,uint256 amount,bytes data);
+    fallback()
+        external
+        payable
+        nonReentrant
+    {
+        require(
+            msg.sender == trustedCaller,
+            "Unauthorized caller"
+        );
 
-    fallback() external payable{
-        /*
-            Track execution.
-        */
+        emit FallbackTriggered(
+            msg.sender,
+            msg.value,
+            msg.data
+        );
+
         fallbackCounter++;
-        /*
-            Track ETH received.
-        */
-        receivedETH += msg.value;
 
-        emit FallbackTriggered(msg.sender, msg.value, msg.data);
+        receivedETH += msg.value;
     }
 
     /*
     =====================================================
     RECEIVE FUNCTION
     =====================================================
-
-    Triggered when:
-    ETH sent with EMPTY calldata.
     */
 
     receive()
         external
         payable
+        nonReentrant
     {
+        emit ReceiveTriggered(
+            msg.sender,
+            msg.value
+        );
 
         receivedETH += msg.value;
     }
@@ -657,102 +825,177 @@ contract TargetContract {
     function normalFunction()
         external
         pure
-        returns (string memory)
+        returns(string memory)
     {
-
         return "Normal execution";
     }
 }
 
 /*
 =========================================================
-CALLER CONTRACT
+PATCHED CALLER CONTRACT
 =========================================================
 */
 
 contract FallbackCaller {
-    /*
-        STORE TARGET ADDRESS
-    */
+
     address public target;
 
-    /*
-        LAST CALL STATUS
-    */
     bool public lastSuccess;
 
-    /*
-        CONSTRUCTOR
-    */
-    constructor(address _target)
+    constructor(
+        address _target
+    )
     {
-
         target = _target;
     }
 
     /*
     =====================================================
-    CALL UNKNOWN FUNCTION
+    TRIGGER FALLBACK
     =====================================================
     */
 
     function triggerFallback()
         external
     {
+        (
+            bool success,
+        ) = target.call(
+            abi.encodeWithSignature(
+                "doesNotExist()"
+            )
+        );
 
-        /*
-            LOW-LEVEL CALL
-
-            Calling NON-EXISTENT function:
-            "doesNotExist()"
-        */
-        (bool success, ) = target.call(abi.encodeWithSignature("doesNotExist()"));
-        /*
-            Save result.
-        */
         lastSuccess = success;
     }
 
     /*
     =====================================================
-    SEND ETH + UNKNOWN CALLDATA
+    TRIGGER FALLBACK WITH ETH
     =====================================================
     */
 
-    function triggerFallbackWithETH()external payable{
-        /*
-            Sends:
-            - ETH
-            - invalid function calldata
-        */
-        (bool success, ) = target.call{value: msg.value}(abi.encodeWithSignature("fakeFunction()"));
+    function triggerFallbackWithETH()
+        external
+        payable
+    {
+        (
+            bool success,
+        ) = target.call{value: msg.value}(
+            abi.encodeWithSignature(
+                "fakeFunction()"
+            )
+        );
+
         lastSuccess = success;
     }
 
     /*
     =====================================================
-    SEND PLAIN ETH
+    TRIGGER RECEIVE
     =====================================================
     */
 
-    function triggerReceive()external payable{
-        /*
-            Empty calldata.
-            receive() executes.
-        */
-        (bool success, ) = target.call{value: msg.value}("");
+    function triggerReceive()
+        external
+        payable
+    {
+        (
+            bool success,
+        ) = target.call{value: msg.value}("");
+
         lastSuccess = success;
     }
 }
-contract VulnerableVault {
-    mapping (address=>uint256)public balances;
 
-    function deposit()external payable {
-        balances[msg.sender]+=msg.value;
+/*
+=========================================================
+REENTRANCY ATTACK SIMULATION
+=========================================================
+
+Educational only.
+
+Used to demonstrate how
+fallback()/receive() can execute
+automatically during ETH transfers.
+=========================================================
+*/
+
+contract ReentrantAttacker {
+
+    TargetContract public target;
+
+    uint256 public attackCounter;
+
+    constructor(
+        address _target
+    )
+    {
+        target = TargetContract(payable(_target));
     }
 
-    function withdraw(uint256 amount)external {
-        require(balances[msg.sender]>=amount,"Not Enough");
-        
+    /*
+    =====================================================
+    RECEIVE TRIGGERS AUTOMATICALLY
+    =====================================================
+    */
+
+    receive()
+        external
+        payable
+    {
+        attackCounter++;
+
+        /*
+            Reentry attempt.
+
+            Will fail because:
+            nonReentrant modifier blocks it.
+        */
+
+        if(attackCounter < 2)
+        {
+            (bool success,) =
+                address(target).call(
+                    abi.encodeWithSignature(
+                        "doesNotExist()"
+                    )
+                );
+
+            success;
+        }
+    }
+}
+
+contract Logic {
+
+    function version()
+        external
+        pure
+        returns(string memory)
+    {
+        return "Logic V1";
+    }
+}
+
+contract MiniProxy {
+
+    address public implementation;
+
+    constructor(address _impl) {
+        implementation = _impl;
+    }
+
+    fallback() external payable {
+
+        (bool success, bytes memory data) =
+            implementation.delegatecall(msg.data);
+
+        require(success, "Delegatecall failed");
+
+        assembly {
+            return(add(data, 32), mload(data))
+        }
     }
 }
