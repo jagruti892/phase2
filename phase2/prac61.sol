@@ -645,69 +645,99 @@ IMPORTANT CONCEPTS LEARNED
 =========================================================
 */
 /*
-Audit Report
+=========================================================
+AUDIT REPORT
+=========================================================
 
-Title: Unchecked Low-Level Call Return Value
+Title: Proper Low-Level Call Handling
 
-Severity: Medium
+Severity: Informational
 
 Reason:
-External call failures can be ignored silently,
-causing inconsistent execution flow.
+All low-level external calls correctly validate
+the returned success boolean.
 
 Location:
 
 Contract: SafeCallHandlerVul
-Function: safeFunctionCall()
+Functions:
+- safeFunctionCall()
+- safeFailingCall()
+- safeETHTransfer()
 
 Vulnerability Description:
+The contract performs external interactions using
+low-level call().
 
-The contract performs a low-level call using:
-(bool success, bytes memory data) = _target.call(...);
-If the success value is not validated using:
-require(success)
-the external call may fail silently while execution continues.
-This can cause the contract to assume an operation
-succeeded when it actually failed.
+Each call follows the secure pattern:
+(bool success, bytes memory data) = target.call(...);
+require(success, "...");
+
+This ensures that:
+
+- failed function calls revert
+- failed ETH transfers revert
+- state changes rollback automatically
+- silent failures cannot occur
+
+No unchecked low-level call vulnerability was found.
 
 Impact:
-An attacker or malicious contract may:
 
-- Force external call failures
-- Cause incorrect protocol assumptions
-- Create inconsistent execution flow
-- Lead to accounting errors
+No security impact identified.
+The contract safely handles:
 
-If critical protocol logic depends on the external call,
-execution may continue with invalid assumptions.
+- reverting external functions
+- rejected ETH transfers
+- failed low-level calls
+
+Transaction atomicity is preserved.
 
 Proof of Concept:
-    1.Deploy CallTargetVul.
-    2.Modify the code by removing:
-        require(success);
+        1. Deploy CallTargetVul.
+        2. Deploy SafeCallHandlerVul.
+        3. Call:
+        safeFunctionCall(CallTargetVul)
 
-    3.Call:
+        Result:
+
+        - successFunction() executes
+        - success = true
+        - transaction succeeds
+
+        4. Call:
+
         safeFailingCall(CallTargetVul)
 
-    4.Execution:
+        Result:
+
         - failFunction() reverts
         - success = false
-        - transaction continues
-        - failure is silently ignored
+        - require(success) triggers
+        - transaction reverts safely
+
+        5. Call:
+            safeETHTransfer(CallTargetVul)
+            Value:
+                1 ETH
+
+        Result:
+        - receive() reverts
+        - success = false
+        - require(success) triggers
+        - transaction reverts safely
 
 Root Cause:
-Low-level call() does not automatically revert.
-The contract fails to validate the returned success value.
+No vulnerability identified.
+The contract correctly validates
+all low-level call return values.
 
 Recommendation:
-Always validate the success boolean returned by call().
-
-Example:
-
-(bool success, ) = target.call(data);
+No security changes required.
+Continue using:
+(bool success, ) = target.call(...);
 require(success, "External call failed");
 */
-
 //patched code 
 contract CallTarget {
     /*

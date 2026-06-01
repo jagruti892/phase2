@@ -1,0 +1,74 @@
+{
+	"compiler": {
+		"version": "0.8.34+commit.80d5c536"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_target",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [],
+				"name": "target",
+				"outputs": [
+					{
+						"internalType": "contract ContractA",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"stateMutability": "payable",
+				"type": "receive"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"phase2/prac62.sol": "MaliciousReentrant"
+		},
+		"evmVersion": "osaka",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"phase2/prac62.sol": {
+			"keccak256": "0xaf7067c1466420a25d00b0d2a5543e125ec73c7d92aad5382daa88b3e167e971",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://226fa83536b01c52578bfd60826360f0bce1ed56aff2881af27bed0f8bf7e7a3",
+				"dweb:/ipfs/QmYiqVD22agj8kPsEh3nb5ufx9LtRDojYMjkY3CVnKj5nh"
+			]
+		}
+	},
+	"version": 1
+}

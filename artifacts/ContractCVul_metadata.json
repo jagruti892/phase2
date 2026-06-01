@@ -1,0 +1,73 @@
+{
+	"compiler": {
+		"version": "0.8.34+commit.80d5c536"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "counter",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "failStep",
+				"outputs": [],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "finalStep",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"phase2/prac62.sol": "ContractCVul"
+		},
+		"evmVersion": "osaka",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"phase2/prac62.sol": {
+			"keccak256": "0x3833d29e482335f18e85652831c5369faede993f446d709f71e3c85de7984c28",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://63bdcb2e1a895f918ffe71c37a74cc691aa46d7c318f98456d944baf51bae341",
+				"dweb:/ipfs/QmRcKdtYFJcfA8F7sznT8926PaN2Nn21p6Ww1SFTBgEGBi"
+			]
+		}
+	},
+	"version": 1
+}
