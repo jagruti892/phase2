@@ -6,22 +6,24 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [
+				"inputs": [],
+				"name": "executionCounter",
+				"outputs": [
 					{
-						"internalType": "address",
-						"name": "_target",
-						"type": "address"
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
-				"stateMutability": "nonpayable",
-				"type": "constructor"
+				"stateMutability": "view",
+				"type": "function"
 			},
 			{
 				"inputs": [],
-				"name": "target",
+				"name": "lastCaller",
 				"outputs": [
 					{
-						"internalType": "contract ExecutionTracer",
+						"internalType": "address",
 						"name": "",
 						"type": "address"
 					}
@@ -30,8 +32,11 @@
 				"type": "function"
 			},
 			{
-				"stateMutability": "payable",
-				"type": "receive"
+				"inputs": [],
+				"name": "targetFunction",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -47,7 +52,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"phase2/prac65.sol": "MaliciousCallback"
+			"phase2/prac65.sol": "ExternalTarget"
 		},
 		"evmVersion": "osaka",
 		"libraries": {},

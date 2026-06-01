@@ -18,10 +18,23 @@
 			},
 			{
 				"inputs": [],
-				"name": "target",
+				"name": "executionStage",
 				"outputs": [
 					{
-						"internalType": "contract ExecutionTracer",
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "lastObservedSender",
+				"outputs": [
+					{
+						"internalType": "address",
 						"name": "",
 						"type": "address"
 					}
@@ -30,8 +43,37 @@
 				"type": "function"
 			},
 			{
-				"stateMutability": "payable",
-				"type": "receive"
+				"inputs": [],
+				"name": "localCounter",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "target",
+				"outputs": [
+					{
+						"internalType": "contract ExternalTargetVul",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "traceExecution",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -47,7 +89,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"phase2/prac65.sol": "MaliciousCallback"
+			"phase2/prac65.sol": "ExecutionTracerVul"
 		},
 		"evmVersion": "osaka",
 		"libraries": {},

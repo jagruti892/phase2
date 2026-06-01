@@ -87,7 +87,7 @@ TARGET CONTRACT
 =========================================================
 */
 
-contract ExternalTarget {
+contract ExternalTargetVul {
 
     /*
         STORE LAST CALLER
@@ -133,12 +133,12 @@ CALLER CONTRACT
 =========================================================
 */
 
-contract ExecutionTracer {
+contract ExecutionTracerVul {
 
     /*
         TARGET CONTRACT REFERENCE
     */
-    ExternalTarget public target;
+    ExternalTargetVul public target;
 
     /*
         LOCAL EXECUTION TRACKING
@@ -164,7 +164,7 @@ contract ExecutionTracer {
         /*
             Save target contract.
         */
-        target = ExternalTarget(_target);
+        target = ExternalTargetVul(_target);
     }
 
     /*
@@ -228,8 +228,7 @@ contract ExecutionTracer {
         back to ExecutionTracer.
         */
 
-        executionStage =
-            "After external call";
+        executionStage ="After external call";
     }
 }
 
@@ -617,3 +616,190 @@ IMPORTANT CONCEPTS LEARNED
 
 =========================================================
 */
+
+// patched code
+contract ExternalTarget {
+
+    /*
+        STORE LAST CALLER
+    */
+    address public lastCaller;
+
+    /*
+        TRACK EXECUTIONS
+    */
+    uint256 public executionCounter;
+
+    /*
+    =====================================================
+    TARGET FUNCTION
+    =====================================================
+    */
+
+    function targetFunction()
+        external
+    {
+
+        /*
+        =================================================
+        EXECUTION CONTEXT NOW INSIDE TARGET CONTRACT
+        =================================================
+
+        msg.sender becomes:
+        calling contract address.
+        */
+
+        lastCaller = msg.sender;
+
+        /*
+            Increment execution count.
+        */
+        executionCounter++;
+    }
+}
+
+/*
+=========================================================
+CALLER CONTRACT
+=========================================================
+*/
+
+contract ExecutionTracer {
+
+    /*
+        TARGET CONTRACT REFERENCE
+    */
+    ExternalTarget public target;
+
+    /*
+        LOCAL EXECUTION TRACKING
+    */
+    uint256 public localCounter;
+
+    /*
+        TRACK EXECUTION STEPS
+    */
+    string public executionStage;
+
+    /*
+        TRACK LAST msg.sender
+    */
+    address public lastObservedSender;
+
+    /*
+        CONSTRUCTOR
+    */
+    constructor(address _target)
+    {
+
+        /*
+            Save target contract.
+        */
+        target = ExternalTarget(_target);
+    }
+
+    /*
+    =====================================================
+    TRACE EXTERNAL EXECUTION
+    =====================================================
+    */
+
+    function traceExecution()
+        external
+    {
+
+        /*
+        =================================================
+        STEP 1
+        =================================================
+
+        Execution currently inside:
+        ExecutionTracer contract.
+        */
+
+        executionStage =
+            "Before external call";
+
+        /*
+            msg.sender here:
+            ORIGINAL USER.
+        */
+        lastObservedSender =
+            msg.sender;
+
+        /*
+            Local state update.
+        */
+        localCounter++;
+
+        /*
+        =================================================
+        STEP 2
+        =================================================
+
+        EXTERNAL CALL HAPPENS HERE.
+
+        CONTROL LEAVES:
+        ExecutionTracer
+
+        CONTROL ENTERS:
+        ExternalTarget
+        */
+
+        target.targetFunction();
+
+        /*
+        =================================================
+        STEP 3
+        =================================================
+
+        External execution finished.
+
+        CONTROL RETURNS:
+        back to ExecutionTracer.
+        */
+
+        executionStage ="After external call";
+    }
+
+    function sendETH(address payable receiver) external payable {
+    (bool success,) = receiver.call{value: msg.value}("");
+    require(success, "ETH failed");
+    }
+
+    function vulnerableWithdraw(address payable attacker) external payable {
+    (bool success,) = attacker.call{value: msg.value}("");
+
+    // external call first (BAD pattern if state existed)
+    require(success);
+
+    localCounter++; // state update AFTER external call (unsafe pattern demo)
+    }
+}
+
+contract MaliciousCallback {
+
+    ExecutionTracer public target;
+
+    constructor(address _target) {
+        target = ExecutionTracer(_target);
+    }
+
+    receive() external payable {
+        // reenter during ETH transfer
+        target.traceExecution();
+    }
+}
+
+contract MiddleContract {
+
+    ExternalTarget public target;
+
+    constructor(address _target) {
+        target = ExternalTarget(_target);
+    }
+
+    function chainCall() external {
+        target.targetFunction();
+    }
+}

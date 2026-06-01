@@ -18,20 +18,23 @@
 			},
 			{
 				"inputs": [],
+				"name": "chainCall",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "target",
 				"outputs": [
 					{
-						"internalType": "contract ExecutionTracer",
+						"internalType": "contract ExternalTarget",
 						"name": "",
 						"type": "address"
 					}
 				],
 				"stateMutability": "view",
 				"type": "function"
-			},
-			{
-				"stateMutability": "payable",
-				"type": "receive"
 			}
 		],
 		"devdoc": {
@@ -47,7 +50,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"phase2/prac65.sol": "MaliciousCallback"
+			"phase2/prac65.sol": "MiddleContract"
 		},
 		"evmVersion": "osaka",
 		"libraries": {},
