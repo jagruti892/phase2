@@ -7,14 +7,7 @@
 		"abi": [
 			{
 				"inputs": [],
-				"name": "alwaysFail",
-				"outputs": [],
-				"stateMutability": "pure",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "callCounter",
+				"name": "counter",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -27,7 +20,14 @@
 			},
 			{
 				"inputs": [],
-				"name": "normalFunction",
+				"name": "failFunction",
+				"outputs": [],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "successFunction",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -50,7 +50,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"phase2/prac59.sol": "Rejector"
+			"phase2/prac61.sol": "CallTargetVul"
 		},
 		"evmVersion": "osaka",
 		"libraries": {},
@@ -64,12 +64,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"phase2/prac59.sol": {
-			"keccak256": "0xbf71ae33d7ff85111cf03e9f34c84ae9cd885ab46a1155a0c813cc746b0855ed",
+		"phase2/prac61.sol": {
+			"keccak256": "0xbe43aca25d8fafd9186a38fc1ac044ec3995ef9457ef77bbd5233169e4af59ec",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://2895244d0d4b11856043b4faff27c3550c4dc27f7e273e3632795d2daaa08e23",
-				"dweb:/ipfs/QmazvkRsP8xPhywtJYbWu1o1gWnZATp1CpvXioGnVqUw6S"
+				"bzz-raw://828e9e7fe5d8541d69ccf59077c3c16d7479ee358941ed11dac3a21f069482c5",
+				"dweb:/ipfs/QmWrVYdKfifGNY4kkuazPfDZfyEqSqB2m7sWLJB3vfFxwu"
 			]
 		}
 	},
