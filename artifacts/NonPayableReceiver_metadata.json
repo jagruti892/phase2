@@ -6,56 +6,51 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
-				"name": "getNumber",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "lastCaller",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
+				"anonymous": false,
 				"inputs": [
 					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
 						"internalType": "uint256",
-						"name": "_number",
+						"name": "amount",
 						"type": "uint256"
 					}
 				],
-				"name": "setNumber",
+				"name": "fallbackTriggeres",
+				"type": "event"
+			},
+			{
+				"stateMutability": "payable",
+				"type": "fallback"
+			},
+			{
+				"inputs": [],
+				"name": "counter",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "increment",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "storedNumber",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
+				"stateMutability": "payable",
+				"type": "receive"
 			}
 		],
 		"devdoc": {
@@ -71,7 +66,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"phase2/prac63.sol": "DataStorageVul"
+			"phase2/prac64.sol": "NonPayableReceiver"
 		},
 		"evmVersion": "osaka",
 		"libraries": {},
@@ -85,12 +80,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"phase2/prac63.sol": {
-			"keccak256": "0xe5f4f02cc8d031624d1ff57f8f1dee2ab12c3f7ae6097b739e5e2cb1779710a7",
+		"phase2/prac64.sol": {
+			"keccak256": "0x1f50900d2f215a2c7e4ad2c09e68407859e81d155c85c04acf3f99e32610e132",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0fd9fb2fa3495d2d51f36cdbcb353f99a63518894c38247b91015ee59a81b0a9",
-				"dweb:/ipfs/QmcRzsxyyFbjxvS5TyQJ4dhsYnFJ2TDbR8bjH3tX9j18zH"
+				"bzz-raw://0df0d78f4a98d4a4bedaac11f83398700ee6c03c581e53896cc4bcd48f4f5456",
+				"dweb:/ipfs/QmUuxXKkfygdZZSDo6Dzh9tvnydZzDXZyKZCtdqMC14NVP"
 			]
 		}
 	},

@@ -6,33 +6,6 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
-				"name": "counter",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "failFunction",
-				"outputs": [],
-				"stateMutability": "pure",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "successFunction",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
 				"stateMutability": "payable",
 				"type": "receive"
 			}
@@ -50,7 +23,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"phase2/prac60.sol": "RejectETH"
+			"phase2/prac64.sol": "RejectETH"
 		},
 		"evmVersion": "osaka",
 		"libraries": {},
@@ -64,12 +37,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"phase2/prac60.sol": {
-			"keccak256": "0x5f39d3d8cecf880468da791c4a412efdabab95370d7ca935812bf37ac4f67c17",
+		"phase2/prac64.sol": {
+			"keccak256": "0x1f50900d2f215a2c7e4ad2c09e68407859e81d155c85c04acf3f99e32610e132",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://6b144e3a887c9035f1647067ac62016aa7295c34e4a2b68dbd5f2492f265ad0e",
-				"dweb:/ipfs/QmTni6PVq9B5oq7zTTKVwGDoyATJeu94jGJaYJRVY7YAJn"
+				"bzz-raw://0df0d78f4a98d4a4bedaac11f83398700ee6c03c581e53896cc4bcd48f4f5456",
+				"dweb:/ipfs/QmUuxXKkfygdZZSDo6Dzh9tvnydZzDXZyKZCtdqMC14NVP"
 			]
 		}
 	},

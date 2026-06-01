@@ -6,6 +6,51 @@
 	"output": {
 		"abi": [
 			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "receiver",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "TransferAttempt",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "success",
+						"type": "bool"
+					}
+				],
+				"name": "TransferResult",
+				"type": "event"
+			},
+			{
+				"inputs": [],
+				"name": "contractBalance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address payable",
@@ -13,8 +58,23 @@
 						"type": "address"
 					}
 				],
-				"stateMutability": "nonpayable",
-				"type": "constructor"
+				"name": "dangerousSend",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "lastError",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
 			},
 			{
 				"inputs": [],
@@ -30,30 +90,81 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "receiver",
-				"outputs": [
+				"inputs": [
 					{
 						"internalType": "address payable",
-						"name": "",
+						"name": "_receiver",
 						"type": "address"
 					}
 				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "sendETH",
 				"outputs": [],
 				"stateMutability": "payable",
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "sendEthwithData",
+				"inputs": [
+					{
+						"internalType": "address payable",
+						"name": "receiver",
+						"type": "address"
+					}
+				],
+				"name": "sendWithCall",
 				"outputs": [],
 				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address payable",
+						"name": "receiver",
+						"type": "address"
+					}
+				],
+				"name": "sendWithSend",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address payable",
+						"name": "receiver",
+						"type": "address"
+					}
+				],
+				"name": "sendWithTransfer",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "totalSent",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "receiver",
+						"type": "address"
+					}
+				],
+				"name": "tryCatchEx",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			}
 		],
@@ -70,7 +181,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"phase2/prac55.sol": "ETHSender"
+			"phase2/prac64.sol": "ETHSender"
 		},
 		"evmVersion": "osaka",
 		"libraries": {},
@@ -84,12 +195,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"phase2/prac55.sol": {
-			"keccak256": "0x84b5cbc881f2e601465e17c26e84cbb983b328d8040855107a37aff5a7986481",
+		"phase2/prac64.sol": {
+			"keccak256": "0x1f50900d2f215a2c7e4ad2c09e68407859e81d155c85c04acf3f99e32610e132",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://a5b9246beaebf2284f43519c8b6bdeb98f79cb9cb992afb3999ceeaba94c68f8",
-				"dweb:/ipfs/QmPujammKWmnkLoZF7YrZ5YiurvFXYSR6WjpP2Asz9E8Un"
+				"bzz-raw://0df0d78f4a98d4a4bedaac11f83398700ee6c03c581e53896cc4bcd48f4f5456",
+				"dweb:/ipfs/QmUuxXKkfygdZZSDo6Dzh9tvnydZzDXZyKZCtdqMC14NVP"
 			]
 		}
 	},
