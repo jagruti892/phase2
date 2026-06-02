@@ -9,7 +9,7 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_target",
+						"name": "_vault",
 						"type": "address"
 					}
 				],
@@ -18,23 +18,27 @@
 			},
 			{
 				"inputs": [],
-				"name": "chainCall",
+				"name": "attack",
 				"outputs": [],
-				"stateMutability": "nonpayable",
+				"stateMutability": "payable",
 				"type": "function"
 			},
 			{
 				"inputs": [],
-				"name": "target",
+				"name": "vault",
 				"outputs": [
 					{
-						"internalType": "contract ExternalTarget",
+						"internalType": "contract Vault",
 						"name": "",
 						"type": "address"
 					}
 				],
 				"stateMutability": "view",
 				"type": "function"
+			},
+			{
+				"stateMutability": "payable",
+				"type": "receive"
 			}
 		],
 		"devdoc": {
@@ -50,7 +54,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"phase2/prac65.sol": "MiddleContract"
+			"phase2/prac65.sol": "Attacker"
 		},
 		"evmVersion": "osaka",
 		"libraries": {},

