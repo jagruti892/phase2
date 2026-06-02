@@ -1,0 +1,66 @@
+{
+	"compiler": {
+		"version": "0.8.34+commit.80d5c536"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "callCounter",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "doWork",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"phase2/prac66.sol": "ExternalCaller"
+		},
+		"evmVersion": "osaka",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"phase2/prac66.sol": {
+			"keccak256": "0x6d528a54a3061b6124022dbcbeb6c60ab3f933e2cc06a9e6b563ea9d6f01934d",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0d92a5ec3e0c25649f01be7206f0b9889373f634f99391b241233857a78edab3",
+				"dweb:/ipfs/QmXjkDyY2BHFzjUNaUSnc9TTQYcPHJSMqUV1siP5vbgtp3"
+			]
+		}
+	},
+	"version": 1
+}
