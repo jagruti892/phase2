@@ -6,6 +6,19 @@
 	"output": {
 		"abi": [
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_owner",
+						"type": "address"
+					}
+				],
+				"name": "initialize",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "owner",
 				"outputs": [
@@ -16,19 +29,6 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_owner",
-						"type": "address"
-					}
-				],
-				"name": "setOwner",
-				"outputs": [],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -71,7 +71,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"phase2/prac82.sol": "LogicV1"
+			"phase2/prac83.sol": "LogicV1"
 		},
 		"evmVersion": "osaka",
 		"libraries": {},
@@ -85,12 +85,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"phase2/prac82.sol": {
-			"keccak256": "0x3de567679edbf9286a3dc30e372ee16c8e9c34a9c266a366c7aee9677f5878cb",
+		"phase2/prac83.sol": {
+			"keccak256": "0x67d7946971598523691891e069e167989b9ec4f15daab7e0a27309a13af1659a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://8857579cf3cfa79c388f07cc7903a9b5b4df214170f923bad9b300a34aba8adf",
-				"dweb:/ipfs/QmaRA8SGrEYp3eaHjTfJhCpHD1bFrWCs5J9aUhSSqiqCbE"
+				"bzz-raw://45be6ae1f646dbb615ea5fab60cf4eb01c0088d501e6998c618e1e5173b1cc91",
+				"dweb:/ipfs/QmPYSuMWzZRuynBvsqS7mkydSai1LDAFrNx9PMhd4korRB"
 			]
 		}
 	},
