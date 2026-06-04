@@ -171,3 +171,81 @@ KEY TAKEAWAYS
 
 =========================================================
 */
+
+/*
+Audit Report
+
+Title: Forced Ether Injection via selfdestruct
+
+Severity: Low
+
+Reason:
+ETH can be forcibly sent to a contract through selfdestruct without executing any function in the target contract.
+
+Location:
+
+Contract: ForceEtherSender
+Function: forceSend(address payable target)
+
+Affected Contract:
+VictimContract
+
+Vulnerability Description:
+The forceSend() function uses selfdestruct(target) to transfer all ETH held by ForceEtherSender to the target address.
+
+This transfer bypasses normal ETH receiving mechanisms such as:
+
+- receive()
+- fallback()
+- payable function calls
+
+As a result, VictimContract can receive ETH even though its internal accounting variable (balanceTracker) is not updated.
+
+Impact:
+The actual ETH balance of VictimContract may differ from its internal accounting state.
+
+Example:
+
+- address(this).balance increases
+- balanceTracker remains unchanged
+
+If a protocol relies on address(this).balance matching internal accounting variables, forced ETH transfers may cause:
+
+- accounting inconsistencies
+- incorrect balance assumptions
+- broken protocol invariants
+
+Proof of Concept:
+
+1. Deploy VictimContract.
+
+2. Deploy ForceEtherSender.
+
+3. Call:
+   forceSend{value: 5 ether}(victimAddress)
+
+4. Observe:
+
+   VictimContract.getBalance()
+   returns 5 ether
+
+5. Observe:
+
+   balanceTracker
+   remains unchanged unless update() was called.
+
+Root Cause:
+The Ethereum protocol allows ETH transfers through selfdestruct.
+
+These transfers do not execute any code in the receiving contract and cannot be rejected by the recipient.
+
+Recommendation:
+Do not assume that address(this).balance only changes through expected contract functions.
+
+When maintaining accounting systems:
+
+- track deposits explicitly
+- avoid relying solely on address(this).balance
+- design invariants that tolerate forced ETH transfers
+
+*/

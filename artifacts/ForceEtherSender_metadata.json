@@ -1,0 +1,59 @@
+{
+	"compiler": {
+		"version": "0.8.34+commit.80d5c536"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address payable",
+						"name": "target",
+						"type": "address"
+					}
+				],
+				"name": "forceSend",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"phase2/prac84.sol": "ForceEtherSender"
+		},
+		"evmVersion": "osaka",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"phase2/prac84.sol": {
+			"keccak256": "0x247c259d6597ee919eb7ea475266c4345e09e5ff8d7baabd7b61c6435d7efd69",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://5d0174fd4574b05b897e1f6d2966c68628539fc4ccb770e1c27bc13e639e2062",
+				"dweb:/ipfs/QmbuheFvaCv5ZCQTKi597ogjtK2XyYihXQnKTg9wDTf9nL"
+			]
+		}
+	},
+	"version": 1
+}
